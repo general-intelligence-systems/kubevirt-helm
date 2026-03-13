@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+<<<<<<< Updated upstream
 PACKAGES="${1:-.packages}"
 INDEX_FILE="index.yaml"
 
@@ -13,12 +14,17 @@ fi
 declare -A operator_entries
 declare -A cr_entries
 
+=======
+INDEX_FILE="index.yaml"
+
+>>>>>>> Stashed changes
 cat > "$INDEX_FILE" <<'EOF'
 apiVersion: v1
 entries:
   kubevirt-operator:
 EOF
 
+<<<<<<< Updated upstream
 for tgz in "$PACKAGES"/kubevirt-operator-*.tgz; do
   [[ -f "$tgz" ]] || continue
   filename=$(basename "$tgz")
@@ -28,12 +34,20 @@ for tgz in "$PACKAGES"/kubevirt-operator-*.tgz; do
   digest=$(sha256sum "$tgz" | awk '{print $1}')
   created=$(git log -1 --format=%aI "$tag" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%SZ")
 
+=======
+for tag in $(git tag -l | sort -V); do
+  version="${tag#v}"
+  created=$(git log -1 --format=%aI "$tag")
+>>>>>>> Stashed changes
   cat >> "$INDEX_FILE" <<EOF
     - name: kubevirt-operator
       version: "${version}"
       appVersion: "${version}"
       description: KubeVirt kubevirt-operator manifests
+<<<<<<< Updated upstream
       digest: "${digest}"
+=======
+>>>>>>> Stashed changes
       urls:
         - kubevirt-operator-${version}.tgz
       created: "${created}"
@@ -45,6 +59,7 @@ cat >> "$INDEX_FILE" <<'EOF'
   kubevirt-cr:
 EOF
 
+<<<<<<< Updated upstream
 for tgz in "$PACKAGES"/kubevirt-cr-*.tgz; do
   [[ -f "$tgz" ]] || continue
   filename=$(basename "$tgz")
@@ -67,5 +82,22 @@ EOF
   echo "  kubevirt-cr @ ${version}"
 done
 
+=======
+for tag in $(git tag -l | sort -V); do
+  version="${tag#v}"
+  created=$(git log -1 --format=%aI "$tag")
+  cat >> "$INDEX_FILE" <<EOF
+    - name: kubevirt-cr
+      version: "${version}"
+      appVersion: "${version}"
+      description: KubeVirt kubevirt-cr manifests
+      urls:
+        - kubevirt-cr-${version}.tgz
+      created: "${created}"
+EOF
+  echo "  kubevirt-cr @ ${version}"
+done
+
+>>>>>>> Stashed changes
 echo "generated: \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"" >> "$INDEX_FILE"
 echo "Done: wrote ${INDEX_FILE}"

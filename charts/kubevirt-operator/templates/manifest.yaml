@@ -178,6 +178,20 @@ spec:
                       defaultArchitecture:
                         type: string
                       ppc64le:
+                        description: 'Deprecated: ppc64le architecture is no longer
+                          supported.'
+                        properties:
+                          emulatedMachines:
+                            items:
+                              type: string
+                            type: array
+                            x-kubernetes-list-type: atomic
+                          machineType:
+                            type: string
+                          ovmfPath:
+                            type: string
+                        type: object
+                      s390x:
                         properties:
                           emulatedMachines:
                             items:
@@ -3457,6 +3471,20 @@ spec:
                       defaultArchitecture:
                         type: string
                       ppc64le:
+                        description: 'Deprecated: ppc64le architecture is no longer
+                          supported.'
+                        properties:
+                          emulatedMachines:
+                            items:
+                              type: string
+                            type: array
+                            x-kubernetes-list-type: atomic
+                          machineType:
+                            type: string
+                          ovmfPath:
+                            type: string
+                        type: object
+                      s390x:
                         properties:
                           emulatedMachines:
                             items:
@@ -6809,7 +6837,6 @@ rules:
   - watch
   - patch
   - update
-  - patch
 - apiGroups:
   - ""
   resources:
@@ -7492,6 +7519,8 @@ rules:
   - get
   - list
   - watch
+  - patch
+  - delete
 - apiGroups:
   - kubevirt.io
   resources:
@@ -8021,6 +8050,21 @@ spec:
       name: virt-operator
     spec:
       affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: DoesNotExist
+            weight: 100
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+            - matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: Exists
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - podAffinityTerm:
@@ -8042,14 +8086,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.6.0
+          value: quay.io/kubevirt/virt-operator:v1.7.0-alpha.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.6.0
-        image: quay.io/kubevirt/virt-operator:v1.6.0
+          value: v1.7.0-alpha.0
+        image: quay.io/kubevirt/virt-operator:v1.7.0-alpha.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -8101,6 +8145,12 @@ spec:
       serviceAccountName: kubevirt-operator
       tolerations:
       - key: CriticalAddonsOnly
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
         operator: Exists
       volumes:
       - name: kubevirt-operator-certs

@@ -7209,9 +7209,16 @@ rules:
 - apiGroups:
   - export.kubevirt.io
   resources:
-  - '*'
+  - virtualmachineexports
+  - virtualmachineexports/status
   verbs:
-  - '*'
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - delete
+  - patch
 - apiGroups:
   - pool.kubevirt.io
   resources:
@@ -7441,6 +7448,7 @@ rules:
   - virtualmachineinstances/userlist
   - virtualmachineinstances/sev/fetchcertchain
   - virtualmachineinstances/sev/querylaunchmeasurement
+  - virtualmachineinstances/usbredir
   verbs:
   - get
 - apiGroups:
@@ -7589,6 +7597,7 @@ rules:
   - virtualmachineinstances/userlist
   - virtualmachineinstances/sev/fetchcertchain
   - virtualmachineinstances/sev/querylaunchmeasurement
+  - virtualmachineinstances/usbredir
   verbs:
   - get
 - apiGroups:
@@ -7897,14 +7906,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.3.1
+          value: quay.io/kubevirt/virt-operator:v1.4.0-alpha.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.3.1
-        image: quay.io/kubevirt/virt-operator:v1.3.1
+          value: v1.4.0-alpha.0
+        image: quay.io/kubevirt/virt-operator:v1.4.0-alpha.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

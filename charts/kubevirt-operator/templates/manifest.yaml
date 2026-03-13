@@ -139,47 +139,6 @@ spec:
                             type: object
                         type: object
                     type: object
-                  architectureConfiguration:
-                    properties:
-                      amd64:
-                        properties:
-                          emulatedMachines:
-                            items:
-                              type: string
-                            type: array
-                            x-kubernetes-list-type: atomic
-                          machineType:
-                            type: string
-                          ovmfPath:
-                            type: string
-                        type: object
-                      arm64:
-                        properties:
-                          emulatedMachines:
-                            items:
-                              type: string
-                            type: array
-                            x-kubernetes-list-type: atomic
-                          machineType:
-                            type: string
-                          ovmfPath:
-                            type: string
-                        type: object
-                      defaultArchitecture:
-                        type: string
-                      ppc64le:
-                        properties:
-                          emulatedMachines:
-                            items:
-                              type: string
-                            type: array
-                            x-kubernetes-list-type: atomic
-                          machineType:
-                            type: string
-                          ovmfPath:
-                            type: string
-                        type: object
-                    type: object
                   controllerConfiguration:
                     description: ReloadableComponentConfiguration holds all generic
                       k8s configuration options which can be reloaded by components
@@ -553,25 +512,6 @@ spec:
                         type: array
                         x-kubernetes-list-type: atomic
                     type: object
-                  seccompConfiguration:
-                    description: SeccompConfiguration holds Seccomp configuration
-                      for Kubevirt components
-                    properties:
-                      virtualMachineInstanceProfile:
-                        description: VirtualMachineInstanceProfile defines what profile
-                          should be used with virt-launcher. Defaults to none
-                        properties:
-                          customProfile:
-                            description: CustomProfile allows to request arbitrary
-                              profile for virt-launcher
-                            properties:
-                              localhostProfile:
-                                type: string
-                              runtimeDefaultProfile:
-                                type: boolean
-                            type: object
-                        type: object
-                    type: object
                   selinuxLauncherType:
                     type: string
                   smbios:
@@ -587,55 +527,6 @@ spec:
                       version:
                         type: string
                     type: object
-                  supportContainerResources:
-                    description: SupportContainerResources specifies the resource
-                      requirements for various types of supporting containers such
-                      as container disks/virtiofs/sidecars and hotplug attachment
-                      pods. If omitted a sensible default will be supplied.
-                    items:
-                      description: SupportContainerResources are used to specify the
-                        cpu/memory request and limits for the containers that support
-                        various features of Virtual Machines. These containers are
-                        usually idle and don't require a lot of memory or cpu.
-                      properties:
-                        resources:
-                          description: ResourceRequirements describes the compute
-                            resource requirements.
-                          properties:
-                            limits:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              description: 'Limits describes the maximum amount of
-                                compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                              type: object
-                            requests:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              description: 'Requests describes the minimum amount
-                                of compute resources required. If Requests is omitted
-                                for a container, it defaults to Limits if that is
-                                explicitly specified, otherwise to an implementation-defined
-                                value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                              type: object
-                          type: object
-                        type:
-                          type: string
-                      required:
-                      - resources
-                      - type
-                      type: object
-                    type: array
-                    x-kubernetes-list-map-keys:
-                    - type
-                    x-kubernetes-list-type: map
                   supportedGuestAgentVersions:
                     description: deprecated
                     items:
@@ -665,11 +556,6 @@ spec:
                     type: object
                   virtualMachineInstancesPerNode:
                     type: integer
-                  vmStateStorageClass:
-                    description: VMStateStorageClass is the name of the storage class
-                      to use for the PVCs created to preserve VM state, like TPM.
-                      The storage class must support RWX in filesystem mode.
-                    type: string
                   webhookConfiguration:
                     description: ReloadableComponentConfiguration holds all generic
                       k8s configuration options which can be reloaded by components
@@ -746,20 +632,6 @@ spec:
               imagePullPolicy:
                 description: The ImagePullPolicy to use.
                 type: string
-              imagePullSecrets:
-                description: The imagePullSecrets to pull the container images from
-                  Defaults to none
-                items:
-                  description: LocalObjectReference contains enough information to
-                    let you locate the referenced object inside the same namespace.
-                  properties:
-                    name:
-                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                        TODO: Add other useful fields. apiVersion, kind, uid?'
-                      type: string
-                  type: object
-                type: array
-                x-kubernetes-list-type: atomic
               imageRegistry:
                 description: The image registry to pull the container images from
                   Defaults to the same registry the operator's container image is
@@ -2812,8 +2684,6 @@ spec:
                   - type
                   type: object
                 type: array
-              defaultArchitecture:
-                type: string
               generations:
                 items:
                   description: GenerationStatus keeps track of the generation for
@@ -2882,7 +2752,7 @@ spec:
         - spec
         type: object
     served: true
-    storage: true
+    storage: false
     subresources:
       status: {}
   - additionalPrinterColumns:
@@ -2892,9 +2762,6 @@ spec:
     - jsonPath: .status.phase
       name: Phase
       type: string
-    deprecated: true
-    deprecationWarning: kubevirt.io/v1alpha3 is now deprecated and will be removed
-      in a future release.
     name: v1alpha3
     schema:
       openAPIV3Schema:
@@ -3001,47 +2868,6 @@ spec:
                             type: object
                         type: object
                     type: object
-                  architectureConfiguration:
-                    properties:
-                      amd64:
-                        properties:
-                          emulatedMachines:
-                            items:
-                              type: string
-                            type: array
-                            x-kubernetes-list-type: atomic
-                          machineType:
-                            type: string
-                          ovmfPath:
-                            type: string
-                        type: object
-                      arm64:
-                        properties:
-                          emulatedMachines:
-                            items:
-                              type: string
-                            type: array
-                            x-kubernetes-list-type: atomic
-                          machineType:
-                            type: string
-                          ovmfPath:
-                            type: string
-                        type: object
-                      defaultArchitecture:
-                        type: string
-                      ppc64le:
-                        properties:
-                          emulatedMachines:
-                            items:
-                              type: string
-                            type: array
-                            x-kubernetes-list-type: atomic
-                          machineType:
-                            type: string
-                          ovmfPath:
-                            type: string
-                        type: object
-                    type: object
                   controllerConfiguration:
                     description: ReloadableComponentConfiguration holds all generic
                       k8s configuration options which can be reloaded by components
@@ -3415,25 +3241,6 @@ spec:
                         type: array
                         x-kubernetes-list-type: atomic
                     type: object
-                  seccompConfiguration:
-                    description: SeccompConfiguration holds Seccomp configuration
-                      for Kubevirt components
-                    properties:
-                      virtualMachineInstanceProfile:
-                        description: VirtualMachineInstanceProfile defines what profile
-                          should be used with virt-launcher. Defaults to none
-                        properties:
-                          customProfile:
-                            description: CustomProfile allows to request arbitrary
-                              profile for virt-launcher
-                            properties:
-                              localhostProfile:
-                                type: string
-                              runtimeDefaultProfile:
-                                type: boolean
-                            type: object
-                        type: object
-                    type: object
                   selinuxLauncherType:
                     type: string
                   smbios:
@@ -3449,55 +3256,6 @@ spec:
                       version:
                         type: string
                     type: object
-                  supportContainerResources:
-                    description: SupportContainerResources specifies the resource
-                      requirements for various types of supporting containers such
-                      as container disks/virtiofs/sidecars and hotplug attachment
-                      pods. If omitted a sensible default will be supplied.
-                    items:
-                      description: SupportContainerResources are used to specify the
-                        cpu/memory request and limits for the containers that support
-                        various features of Virtual Machines. These containers are
-                        usually idle and don't require a lot of memory or cpu.
-                      properties:
-                        resources:
-                          description: ResourceRequirements describes the compute
-                            resource requirements.
-                          properties:
-                            limits:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              description: 'Limits describes the maximum amount of
-                                compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                              type: object
-                            requests:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              description: 'Requests describes the minimum amount
-                                of compute resources required. If Requests is omitted
-                                for a container, it defaults to Limits if that is
-                                explicitly specified, otherwise to an implementation-defined
-                                value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                              type: object
-                          type: object
-                        type:
-                          type: string
-                      required:
-                      - resources
-                      - type
-                      type: object
-                    type: array
-                    x-kubernetes-list-map-keys:
-                    - type
-                    x-kubernetes-list-type: map
                   supportedGuestAgentVersions:
                     description: deprecated
                     items:
@@ -3527,11 +3285,6 @@ spec:
                     type: object
                   virtualMachineInstancesPerNode:
                     type: integer
-                  vmStateStorageClass:
-                    description: VMStateStorageClass is the name of the storage class
-                      to use for the PVCs created to preserve VM state, like TPM.
-                      The storage class must support RWX in filesystem mode.
-                    type: string
                   webhookConfiguration:
                     description: ReloadableComponentConfiguration holds all generic
                       k8s configuration options which can be reloaded by components
@@ -3608,20 +3361,6 @@ spec:
               imagePullPolicy:
                 description: The ImagePullPolicy to use.
                 type: string
-              imagePullSecrets:
-                description: The imagePullSecrets to pull the container images from
-                  Defaults to none
-                items:
-                  description: LocalObjectReference contains enough information to
-                    let you locate the referenced object inside the same namespace.
-                  properties:
-                    name:
-                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                        TODO: Add other useful fields. apiVersion, kind, uid?'
-                      type: string
-                  type: object
-                type: array
-                x-kubernetes-list-type: atomic
               imageRegistry:
                 description: The image registry to pull the container images from
                   Defaults to the same registry the operator's container image is
@@ -5674,8 +5413,6 @@ spec:
                   - type
                   type: object
                 type: array
-              defaultArchitecture:
-                type: string
               generations:
                 items:
                   description: GenerationStatus keeps track of the generation for
@@ -5744,7 +5481,7 @@ spec:
         - spec
         type: object
     served: true
-    storage: false
+    storage: true
     subresources:
       status: {}
 
@@ -5797,15 +5534,6 @@ metadata:
 rules:
 - apiGroups:
   - ""
-  resourceNames:
-  - kubevirt-ca
-  - kubevirt-export-ca
-  - kubevirt-virt-handler-certs
-  - kubevirt-virt-handler-server-certs
-  - kubevirt-operator-certs
-  - kubevirt-virt-api-certs
-  - kubevirt-controller-certs
-  - kubevirt-exportproxy-certs
   resources:
   - secrets
   verbs:
@@ -6139,7 +5867,6 @@ rules:
   resources:
   - virtualmachinesnapshots
   - virtualmachinerestores
-  - virtualmachinesnapshotcontents
   verbs:
   - get
   - list
@@ -6148,7 +5875,6 @@ rules:
   - cdi.kubevirt.io
   resources:
   - datasources
-  - datavolumes
   verbs:
   - get
   - list
@@ -6311,8 +6037,6 @@ rules:
   resources:
   - virtualmachinepools
   - virtualmachinepools/finalizers
-  - virtualmachinepools/status
-  - virtualmachinepools/scale
   verbs:
   - watch
   - list
@@ -6335,7 +6059,6 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
-  - virtualmachineinstances/addinterface
   verbs:
   - update
 - apiGroups:
@@ -6574,7 +6297,6 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
-  - virtualmachineinstances/addinterface
   verbs:
   - update
 - apiGroups:
@@ -6594,7 +6316,6 @@ rules:
   - virtualmachines/removevolume
   - virtualmachines/migrate
   - virtualmachines/memorydump
-  - virtualmachines/addinterface
   verbs:
   - update
 - apiGroups:
@@ -6720,7 +6441,6 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
-  - virtualmachineinstances/addinterface
   verbs:
   - update
 - apiGroups:
@@ -6740,7 +6460,6 @@ rules:
   - virtualmachines/removevolume
   - virtualmachines/migrate
   - virtualmachines/memorydump
-  - virtualmachines/addinterface
   verbs:
   - update
 - apiGroups:
@@ -6998,14 +6717,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.0.0-beta.0
+          value: quay.io/kubevirt/virt-operator:v0.58.2
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.0.0-beta.0
-        image: quay.io/kubevirt/virt-operator:v1.0.0-beta.0
+          value: v0.58.2
+        image: quay.io/kubevirt/virt-operator:v0.58.2
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

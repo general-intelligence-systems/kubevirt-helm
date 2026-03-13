@@ -230,9 +230,6 @@ spec:
                       pvcTolerateLessSpaceUpToPercent:
                         type: integer
                       useEmulation:
-                        description: UseEmulation can be set to true to allow fallback
-                          to software emulation in case hardware-assisted emulation
-                          is not available.
                         type: boolean
                     type: object
                   emulatedMachines:
@@ -276,16 +273,6 @@ spec:
                     type: string
                   machineType:
                     type: string
-                  mediatedDevicesConfiguration:
-                    description: MediatedDevicesConfiguration holds inforamtion about
-                      MDEV types to be defined, if available
-                    properties:
-                      mediatedDevicesTypes:
-                        items:
-                          type: string
-                        type: array
-                        x-kubernetes-list-type: atomic
-                    type: object
                   memBalloonStatsPeriod:
                     format: int32
                     type: integer
@@ -370,8 +357,8 @@ spec:
                                 and monitoring to an external device plugin
                               type: boolean
                             pciVendorSelector:
-                              description: The vendor_id:product_id tuple of the PCI
-                                device
+                              description: The vendor_id:product_id tupple of the
+                                PCI device
                               type: string
                             resourceName:
                               description: The name of the resource that is representing
@@ -2266,9 +2253,6 @@ spec:
                       pvcTolerateLessSpaceUpToPercent:
                         type: integer
                       useEmulation:
-                        description: UseEmulation can be set to true to allow fallback
-                          to software emulation in case hardware-assisted emulation
-                          is not available.
                         type: boolean
                     type: object
                   emulatedMachines:
@@ -2312,16 +2296,6 @@ spec:
                     type: string
                   machineType:
                     type: string
-                  mediatedDevicesConfiguration:
-                    description: MediatedDevicesConfiguration holds inforamtion about
-                      MDEV types to be defined, if available
-                    properties:
-                      mediatedDevicesTypes:
-                        items:
-                          type: string
-                        type: array
-                        x-kubernetes-list-type: atomic
-                    type: object
                   memBalloonStatsPeriod:
                     format: int32
                     type: integer
@@ -2406,8 +2380,8 @@ spec:
                                 and monitoring to an external device plugin
                               type: boolean
                             pciVendorSelector:
-                              description: The vendor_id:product_id tuple of the PCI
-                                device
+                              description: The vendor_id:product_id tupple of the
+                                PCI device
                               type: string
                             resourceName:
                               description: The name of the resource that is representing
@@ -4192,6 +4166,14 @@ metadata:
   name: kubevirt-operator
 rules:
 - apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - get
+  - update
+- apiGroups:
   - kubevirt.io
   resources:
   - kubevirts
@@ -4353,6 +4335,14 @@ rules:
   - delete
   - update
   - patch
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - virtualmachines/start
+  - virtualmachines/stop
+  - virtualmachines/restart
+  verbs:
+  - put
 - apiGroups:
   - subresources.kubevirt.io
   resources:
@@ -4641,6 +4631,12 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - persistentvolumeclaims
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
   - nodes
   verbs:
   - patch
@@ -4923,12 +4919,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.46.0-rc.0
+          value: quay.io/kubevirt/virt-operator:v0.44.2
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.46.0-rc.0
+        image: quay.io/kubevirt/virt-operator:v0.44.2
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:
@@ -4953,8 +4949,6 @@ spec:
         - mountPath: /etc/virt-operator/certificates
           name: kubevirt-operator-certs
           readOnly: true
-        - mountPath: /profile-data
-          name: profile-data
       priorityClassName: kubevirt-cluster-critical
       securityContext:
         runAsNonRoot: true
@@ -4967,5 +4961,3 @@ spec:
         secret:
           optional: true
           secretName: kubevirt-operator-certs
-      - emptyDir: {}
-        name: profile-data

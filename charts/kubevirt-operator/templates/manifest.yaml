@@ -110,6 +110,19 @@ spec:
                     properties:
                       cpuAllocationRatio:
                         type: integer
+                      diskVerification:
+                        description: DiskVerification holds container disks verification
+                          limits
+                        properties:
+                          memoryLimit:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            x-kubernetes-int-or-string: true
+                        required:
+                        - memoryLimit
+                        type: object
                       featureGates:
                         items:
                           type: string
@@ -136,6 +149,15 @@ spec:
                             type: integer
                         type: object
                       memoryOvercommit:
+                        type: integer
+                      minimumClusterTSCFrequency:
+                        description: Allow overriding the automatically determined
+                          minimum TSC frequency of the cluster and fixate the minimum
+                          to this frequency.
+                        format: int64
+                        type: integer
+                      minimumReservePVCBytes:
+                        format: int64
                         type: integer
                       nodeSelectors:
                         additionalProperties:
@@ -175,6 +197,8 @@ spec:
                       completionTimeoutPerGiB:
                         format: int64
                         type: integer
+                      disableTLS:
+                        type: boolean
                       nodeDrainTaintKey:
                         type: string
                       parallelMigrationsPerCluster:
@@ -234,10 +258,20 @@ spec:
                             allowed for passthrough
                           properties:
                             externalResourceProvider:
+                              description: If true, KubeVirt will leave the allocation
+                                and monitoring to an external device plugin
                               type: boolean
                             pciVendorSelector:
+                              description: The vendor_id:product_id tupple of the
+                                PCI device
                               type: string
                             resourceName:
+                              description: The name of the resource that is representing
+                                the device. Exposed by a device plugin and requested
+                                by VMs. Typically of the form vendor.com/product_nameThe
+                                name of the resource that is representing the device.
+                                Exposed by a device plugin and requested by VMs. Typically
+                                of the form vendor.com/product_name
                               type: string
                           required:
                           - pciVendorSelector
@@ -1971,6 +2005,19 @@ spec:
                     properties:
                       cpuAllocationRatio:
                         type: integer
+                      diskVerification:
+                        description: DiskVerification holds container disks verification
+                          limits
+                        properties:
+                          memoryLimit:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            x-kubernetes-int-or-string: true
+                        required:
+                        - memoryLimit
+                        type: object
                       featureGates:
                         items:
                           type: string
@@ -1997,6 +2044,15 @@ spec:
                             type: integer
                         type: object
                       memoryOvercommit:
+                        type: integer
+                      minimumClusterTSCFrequency:
+                        description: Allow overriding the automatically determined
+                          minimum TSC frequency of the cluster and fixate the minimum
+                          to this frequency.
+                        format: int64
+                        type: integer
+                      minimumReservePVCBytes:
+                        format: int64
                         type: integer
                       nodeSelectors:
                         additionalProperties:
@@ -2036,6 +2092,8 @@ spec:
                       completionTimeoutPerGiB:
                         format: int64
                         type: integer
+                      disableTLS:
+                        type: boolean
                       nodeDrainTaintKey:
                         type: string
                       parallelMigrationsPerCluster:
@@ -2095,10 +2153,20 @@ spec:
                             allowed for passthrough
                           properties:
                             externalResourceProvider:
+                              description: If true, KubeVirt will leave the allocation
+                                and monitoring to an external device plugin
                               type: boolean
                             pciVendorSelector:
+                              description: The vendor_id:product_id tupple of the
+                                PCI device
                               type: string
                             resourceName:
+                              description: The name of the resource that is representing
+                                the device. Exposed by a device plugin and requested
+                                by VMs. Typically of the form vendor.com/product_nameThe
+                                name of the resource that is representing the device.
+                                Exposed by a device plugin and requested by VMs. Typically
+                                of the form vendor.com/product_name
                               type: string
                           required:
                           - pciVendorSelector
@@ -4539,12 +4607,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.42.2
+          value: quay.io/kubevirt/virt-operator:v0.43.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.42.2
+        image: quay.io/kubevirt/virt-operator:v0.43.1
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

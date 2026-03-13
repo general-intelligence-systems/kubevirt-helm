@@ -5714,6 +5714,7 @@ rules:
   - delete
   - update
   - create
+  - patch
 - apiGroups:
   - ""
   resources:
@@ -5903,8 +5904,17 @@ rules:
   - clone.kubevirt.io
   resources:
   - virtualmachineclones
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - clone.kubevirt.io
+  resources:
   - virtualmachineclones/status
-  - virtualmachineclones/finalizers
   verbs:
   - get
   - list
@@ -6373,12 +6383,12 @@ spec:
         - virt-operator
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.57.0
+          value: quay.io/kubevirt/virt-operator:v0.56.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.57.0
+        image: quay.io/kubevirt/virt-operator:v0.56.1
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

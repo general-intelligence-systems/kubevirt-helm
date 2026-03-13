@@ -551,6 +551,25 @@ spec:
                             type: object
                         type: object
                     type: object
+                  hypervisors:
+                    description: Hypervisors holds information regarding the hypervisor
+                      configurations supported on this cluster.
+                    items:
+                      description: HypervisorConfiguration holds information regarding
+                        the hypervisor present on cluster nodes.
+                      properties:
+                        name:
+                          description: |-
+                            Name is the name of the hypervisor.
+                            Supported values are: "kvm", "hyperv-direct".
+                          enum:
+                          - kvm
+                          - hyperv-direct
+                          type: string
+                      type: object
+                    maxItems: 1
+                    type: array
+                    x-kubernetes-list-type: atomic
                   imagePullPolicy:
                     description: PullPolicy describes a policy for if/when to pull
                       a container image
@@ -662,6 +681,12 @@ spec:
                     description: MediatedDevicesConfiguration holds information about
                       MDEV types to be defined, if available
                     properties:
+                      enabled:
+                        description: |-
+                          Enable the creation and removal of mediated devices by virt-handler
+                          Replaces the deprecated DisableMDEVConfiguration feature gate
+                          Defaults to true
+                        type: boolean
                       mediatedDeviceTypes:
                         items:
                           type: string
@@ -3939,6 +3964,25 @@ spec:
                             type: object
                         type: object
                     type: object
+                  hypervisors:
+                    description: Hypervisors holds information regarding the hypervisor
+                      configurations supported on this cluster.
+                    items:
+                      description: HypervisorConfiguration holds information regarding
+                        the hypervisor present on cluster nodes.
+                      properties:
+                        name:
+                          description: |-
+                            Name is the name of the hypervisor.
+                            Supported values are: "kvm", "hyperv-direct".
+                          enum:
+                          - kvm
+                          - hyperv-direct
+                          type: string
+                      type: object
+                    maxItems: 1
+                    type: array
+                    x-kubernetes-list-type: atomic
                   imagePullPolicy:
                     description: PullPolicy describes a policy for if/when to pull
                       a container image
@@ -4050,6 +4094,12 @@ spec:
                     description: MediatedDevicesConfiguration holds information about
                       MDEV types to be defined, if available
                     properties:
+                      enabled:
+                        description: |-
+                          Enable the creation and removal of mediated devices by virt-handler
+                          Replaces the deprecated DisableMDEVConfiguration feature gate
+                          Defaults to true
+                        type: boolean
                       mediatedDeviceTypes:
                         items:
                           type: string
@@ -7903,6 +7953,7 @@ rules:
   - backup.kubevirt.io
   resources:
   - virtualmachinebackups
+  - virtualmachinebackuptrackers
   verbs:
   - get
   - delete
@@ -7912,18 +7963,6 @@ rules:
   - list
   - watch
   - deletecollection
-- apiGroups:
-  - backup.kubevirt.io
-  resources:
-  - virtualmachinebackuptrackers
-  - virtualmachinebackuptrackers/status
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
 - apiGroups:
   - export.kubevirt.io
   resources:
@@ -8086,6 +8125,7 @@ rules:
   - backup.kubevirt.io
   resources:
   - virtualmachinebackups
+  - virtualmachinebackuptrackers
   verbs:
   - get
   - delete
@@ -8212,6 +8252,7 @@ rules:
   - backup.kubevirt.io
   resources:
   - virtualmachinebackups
+  - virtualmachinebackuptrackers
   verbs:
   - get
   - list
@@ -8378,14 +8419,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.8.0-alpha.0
+          value: quay.io/kubevirt/virt-operator:v1.8.0-beta.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.8.0-alpha.0
-        image: quay.io/kubevirt/virt-operator:v1.8.0-alpha.0
+          value: v1.8.0-beta.0
+        image: quay.io/kubevirt/virt-operator:v1.8.0-beta.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:

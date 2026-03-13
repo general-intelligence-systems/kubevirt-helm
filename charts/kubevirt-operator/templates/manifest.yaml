@@ -462,6 +462,8 @@ rules:
   resources:
   - virtualmachineinstances/console
   - virtualmachineinstances/vnc
+  - virtualmachineinstances/pause
+  - virtualmachineinstances/unpause
   verbs:
   - get
 - apiGroups:
@@ -494,6 +496,8 @@ rules:
   resources:
   - virtualmachineinstances/console
   - virtualmachineinstances/vnc
+  - virtualmachineinstances/pause
+  - virtualmachineinstances/unpause
   verbs:
   - get
 - apiGroups:
@@ -594,22 +598,22 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: index.docker.io/kubevirt/virt-operator@sha256:15cf60234b2c808f8ddf68a988cee80587c867b63c0b252774ce5297295065f2
+          value: index.docker.io/kubevirt/virt-operator@sha256:895ab1faed0557ce488241785019cb01ae1906c4ded5e96cfdd478b56ad1b87f
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.23.1
+          value: v0.24.0
         - name: VIRT_API_SHASUM
-          value: sha256:8f297ce93880036186bba61acf1ebe407e41061906bc37ddb26a0fcefd9dc31f
+          value: sha256:acda0aef87d8e0a7443a889340f2f76ee2f449786a13d84fc36fd66f9d6853c2
         - name: VIRT_CONTROLLER_SHASUM
-          value: sha256:de9fc2038500597482fce750868e83b7bd21a9f928ae9d14f84f4a7cca63550b
+          value: sha256:94eff668e3145ff59faec450afb50a7843a325b822f2c4ce07d18aaa2a4bd26a
         - name: VIRT_HANDLER_SHASUM
-          value: sha256:b7a2e8c5ec0ca8908b593b74adaf2044550c59aa7924cba7fb4a8972bbf03219
+          value: sha256:953c18cb96b907fd391fd064a14b50764a7701b78c43bae3e98a865c33381e06
         - name: VIRT_LAUNCHER_SHASUM
-          value: sha256:eb68bf622cc5802f77d85587b414810fa7d4d7e0aeefc7ab1591b3b6efe8db3c
-        image: index.docker.io/kubevirt/virt-operator@sha256:15cf60234b2c808f8ddf68a988cee80587c867b63c0b252774ce5297295065f2
+          value: sha256:407ea330e82b807570dd17924712c43bd609ffb6b601b70b62e6a1893dfb324b
+        image: index.docker.io/kubevirt/virt-operator@sha256:895ab1faed0557ce488241785019cb01ae1906c4ded5e96cfdd478b56ad1b87f
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

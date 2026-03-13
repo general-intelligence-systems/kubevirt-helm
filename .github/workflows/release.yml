@@ -1,12 +1,9 @@
 name: Release Charts
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "KubeVirt version (e.g. v1.7.0)"
-        required: true
-        type: string
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
@@ -19,29 +16,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Configure git
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-
-      - name: Fetch releases
-        run: nix develop --command bin/fetch-releases
-
-      - name: Build charts
-        run: nix develop --command bin/build-charts "${{ inputs.version }}"
-
-      - name: Push commit and tag
-        run: |
-          git push origin main
-          git push origin "${{ inputs.version }}"
 
       - name: Release charts
         uses: helm/chart-releaser-action@v1.7.0
         with:
           charts_dir: charts
           skip_existing: true
+          packages_with_index: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

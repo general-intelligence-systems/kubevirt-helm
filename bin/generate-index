@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+RELEASES_FILE="data/releases.yaml"
+INDEX_FILE="index.yaml"
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ ! -f "$RELEASES_FILE" ]]; then
+  echo "Error: ${RELEASES_FILE} not found. Run bin/fetch-releases first." >&2
+  exit 1
+fi
+
+# build a lookup of tag -> published_at from releases data
+TIMESTAMPS=$(yq -o=json '[.[] | {(.tag): .published_at}] | add' "$RELEASES_FILE")
+
+# start building index
+entries_operator="[]"
+entries_cr="[]"
+
+for tag in $(git tag -l | sort -V); do
+  # checkout tag silently
+  git checkout "$tag" --quiet 2>/dev/null || continue
+
+  for chart_dir in charts/*/; do
+    [[ -f "${chart_dir}Chart.yaml" ]] || continue
+
+    name=$(yq -r '.name' "${chart_dir}Chart.yaml")
+    version=$(yq -r '.version' "${chart_dir}Chart.yaml")
+    app_version=$(yq -r '.appVersion' "${chart_dir}Chart.yaml")
+    description=$(yq -r '.description' "${chart_dir}Chart.yaml")
+    created=$(echo "$TIMESTAMPS" | jq -r --arg t "$tag" '.[$t] // empty')
+    [[ -z "$created" ]] && created=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+    entry=$(jq -n \
+      --arg name "$name" \
+      --arg version "$version" \
+      --arg appVersion "$app_version" \
+      --arg description "$description" \
+      --arg created "$created" \
+      --arg url "${name}-${version}.tgz" \
+      '{
+        name: $name,
+        version: $version,
+        appVersion: $appVersion,
+        description: $description,
+        created: $created,
+        urls: [$url]
+      }')
+
+    case "$name" in
+      kubevirt-operator) entries_operator=$(echo "$entries_operator" | jq --argjson e "$entry" '. + [$e]') ;;
+      kubevirt-cr)       entries_cr=$(echo "$entries_cr" | jq --argjson e "$entry" '. + [$e]') ;;
+    esac
+
+    echo "  ${name} @ ${version}"
+  done
+done
+
+# go back to original branch
+git checkout "$CURRENT_BRANCH" --quiet
+
+# assemble index.yaml
+jq -n \
+  --argjson operator "$entries_operator" \
+  --argjson cr "$entries_cr" \
+  --arg generated "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+  '{
+    apiVersion: "v1",
+    entries: {
+      "kubevirt-operator": $operator,
+      "kubevirt-cr": $cr
+    },
+    generated: $generated
+  }' | yq -P > "$INDEX_FILE"
+
+echo "Wrote ${INDEX_FILE} with $(echo "$entries_operator" | jq 'length') operator + $(echo "$entries_cr" | jq 'length') cr entries"

@@ -7151,6 +7151,7 @@ rules:
   - virtualmachinesnapshots/status
   - virtualmachinesnapshotcontents
   - virtualmachinesnapshotcontents/status
+  - virtualmachinesnapshotcontents/finalizers
   - virtualmachinerestores
   - virtualmachinerestores/status
   verbs:
@@ -7196,6 +7197,12 @@ rules:
   - '*'
   verbs:
   - '*'
+- apiGroups:
+  - kubevirt.io
+  resources:
+  - virtualmachines/finalizers
+  verbs:
+  - update
 - apiGroups:
   - subresources.kubevirt.io
   resources:
@@ -7862,14 +7869,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.4.0-rc.0
+          value: quay.io/kubevirt/virt-operator:v1.4.0-rc.2
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.4.0-rc.0
-        image: quay.io/kubevirt/virt-operator:v1.4.0-rc.0
+          value: v1.4.0-rc.2
+        image: quay.io/kubevirt/virt-operator:v1.4.0-rc.2
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

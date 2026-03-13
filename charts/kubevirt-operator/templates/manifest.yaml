@@ -4581,12 +4581,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.43.0-rc.1
+          value: quay.io/kubevirt/virt-operator:v0.43.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.43.0-rc.1
+        image: quay.io/kubevirt/virt-operator:v0.43.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

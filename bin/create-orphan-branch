@@ -2,10 +2,11 @@
 set -euo pipefail
 
 BRANCH="${1:?Usage: bin/create-orphan-branch <branch-name>}"
+ORIG_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 git checkout --orphan "$BRANCH"
 git rm -rf .
 git commit --allow-empty -m "init ${BRANCH}"
-git checkout -
+git checkout "$ORIG_BRANCH"
 
 echo "Created orphan branch: ${BRANCH}"

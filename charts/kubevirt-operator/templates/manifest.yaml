@@ -612,17 +612,6 @@ spec:
                   network:
                     description: NetworkConfiguration holds network options
                     properties:
-                      binding:
-                        additionalProperties:
-                          properties:
-                            sidecarImage:
-                              description: 'SidecarImage references a container image
-                                that runs in the virt-launcher pod. The sidecar handles
-                                (libvirt) domain configuration and optional services.
-                                version: 1alphav1'
-                              type: string
-                          type: object
-                        type: object
                       defaultNetworkInterface:
                         type: string
                       permitBridgeInterfaceOnPodNetwork:
@@ -673,7 +662,10 @@ spec:
                             resourceName:
                               description: The name of the resource that is representing
                                 the device. Exposed by a device plugin and requested
-                                by VMs. Typically of the form vendor.com/product_name
+                                by VMs. Typically of the form vendor.com/product_nameThe
+                                name of the resource that is representing the device.
+                                Exposed by a device plugin and requested by VMs. Typically
+                                of the form vendor.com/product_name
                               type: string
                           required:
                           - pciVendorSelector
@@ -3619,17 +3611,6 @@ spec:
                   network:
                     description: NetworkConfiguration holds network options
                     properties:
-                      binding:
-                        additionalProperties:
-                          properties:
-                            sidecarImage:
-                              description: 'SidecarImage references a container image
-                                that runs in the virt-launcher pod. The sidecar handles
-                                (libvirt) domain configuration and optional services.
-                                version: 1alphav1'
-                              type: string
-                          type: object
-                        type: object
                       defaultNetworkInterface:
                         type: string
                       permitBridgeInterfaceOnPodNetwork:
@@ -3680,7 +3661,10 @@ spec:
                             resourceName:
                               description: The name of the resource that is representing
                                 the device. Exposed by a device plugin and requested
-                                by VMs. Typically of the form vendor.com/product_name
+                                by VMs. Typically of the form vendor.com/product_nameThe
+                                name of the resource that is representing the device.
+                                Exposed by a device plugin and requested by VMs. Typically
+                                of the form vendor.com/product_name
                               type: string
                           required:
                           - pciVendorSelector
@@ -6341,6 +6325,22 @@ rules:
   - watch
   - patch
 - apiGroups:
+  - flavor.kubevirt.io
+  resources:
+  - virtualmachineflavors
+  - virtualmachineclusterflavors
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
+  verbs:
+  - get
+  - delete
+  - create
+  - update
+  - patch
+  - list
+  - watch
+  - deletecollection
+- apiGroups:
   - ""
   resources:
   - pods
@@ -6629,8 +6629,6 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
-  - virtualmachineinstances/sev/setupsession
-  - virtualmachineinstances/sev/injectlaunchsecret
   verbs:
   - update
 - apiGroups:
@@ -6876,8 +6874,6 @@ rules:
   - virtualmachineinstances/guestosinfo
   - virtualmachineinstances/filesystemlist
   - virtualmachineinstances/userlist
-  - virtualmachineinstances/sev/fetchcertchain
-  - virtualmachineinstances/sev/querylaunchmeasurement
   verbs:
   - get
 - apiGroups:
@@ -6890,8 +6886,6 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
-  - virtualmachineinstances/sev/setupsession
-  - virtualmachineinstances/sev/injectlaunchsecret
   verbs:
   - update
 - apiGroups:
@@ -6911,6 +6905,7 @@ rules:
   - virtualmachines/removevolume
   - virtualmachines/migrate
   - virtualmachines/memorydump
+  - virtualmachines/addinterface
   verbs:
   - update
 - apiGroups:
@@ -7024,8 +7019,6 @@ rules:
   - virtualmachineinstances/guestosinfo
   - virtualmachineinstances/filesystemlist
   - virtualmachineinstances/userlist
-  - virtualmachineinstances/sev/fetchcertchain
-  - virtualmachineinstances/sev/querylaunchmeasurement
   verbs:
   - get
 - apiGroups:
@@ -7038,8 +7031,6 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
-  - virtualmachineinstances/sev/setupsession
-  - virtualmachineinstances/sev/injectlaunchsecret
   verbs:
   - update
 - apiGroups:
@@ -7059,6 +7050,7 @@ rules:
   - virtualmachines/removevolume
   - virtualmachines/migrate
   - virtualmachines/memorydump
+  - virtualmachines/addinterface
   verbs:
   - update
 - apiGroups:
@@ -7170,8 +7162,6 @@ rules:
   - virtualmachineinstances/guestosinfo
   - virtualmachineinstances/filesystemlist
   - virtualmachineinstances/userlist
-  - virtualmachineinstances/sev/fetchcertchain
-  - virtualmachineinstances/sev/querylaunchmeasurement
   verbs:
   - get
 - apiGroups:
@@ -7241,6 +7231,15 @@ rules:
   - migrations.kubevirt.io
   resources:
   - migrationpolicies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - instancetype.kubevirt.io
+  resources:
+  - virtualmachineclusterinstancetypes
+  - virtualmachineclusterpreferences
   verbs:
   - get
   - list
@@ -7318,14 +7317,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.1.0-alpha.0
+          value: quay.io/kubevirt/virt-operator:v1.0.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.1.0-alpha.0
-        image: quay.io/kubevirt/virt-operator:v1.1.0-alpha.0
+          value: v1.0.1
+        image: quay.io/kubevirt/virt-operator:v1.0.1
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

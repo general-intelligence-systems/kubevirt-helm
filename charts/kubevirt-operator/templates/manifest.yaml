@@ -604,23 +604,12 @@ spec:
     metadata:
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ""
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly","operator":"Exists"}]'
       labels:
         kubevirt.io: virt-operator
         prometheus.kubevirt.io: ""
       name: virt-operator
     spec:
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: kubevirt.io
-                  operator: In
-                  values:
-                  - virt-operator
-              topologyKey: kubernetes.io/hostname
-            weight: 1
       containers:
       - command:
         - virt-operator
@@ -630,22 +619,22 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: index.docker.io/kubevirt/virt-operator@sha256:84c50ed3c699265512c858a8bafa9ecd662735695ce5a09c15c13c97773f15f2
+          value: index.docker.io/kubevirt/virt-operator@sha256:f1b253006405f9b3f5b3fa7889574377733dcb29776917434973d6021677de7f
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.28.0
+          value: v0.26.5
         - name: VIRT_API_SHASUM
-          value: sha256:5a40b1559fdb4ec5626e7fd88a89ae21a41cca124162b97f7d9f795b9f8e2be3
+          value: sha256:962ae03c11e546b1df094822e3b8cfe240d7d1ec80bc83a9f5cd56fff86a64ac
         - name: VIRT_CONTROLLER_SHASUM
-          value: sha256:25fc5313b4e2bcee20b5670efd51833ccc02b1c381de4a240e7ceeba9eecd8f5
+          value: sha256:5f1217adf1dc66b40a2daa3cc0d6466042e1e5a078708d8a4627fb498b61d8e1
         - name: VIRT_HANDLER_SHASUM
-          value: sha256:d2903f3c5d38e768d9aa8015db82a5aef450db3114df9e2bb9b4f234407468c3
+          value: sha256:0169eda865959faf2b42709c9f61da1b77b25c0ffdd399edb1ad54b763e3101c
         - name: VIRT_LAUNCHER_SHASUM
-          value: sha256:9875bb3c0b303280eee52c63b8131554a72f1635811b12370de171eb91695e6f
-        image: index.docker.io/kubevirt/virt-operator@sha256:84c50ed3c699265512c858a8bafa9ecd662735695ce5a09c15c13c97773f15f2
+          value: sha256:3db49b60e74a213e18c6ba1f96ef96a9cd31cb413de650cd669fa4a5f5e0dc01
+        image: index.docker.io/kubevirt/virt-operator@sha256:f1b253006405f9b3f5b3fa7889574377733dcb29776917434973d6021677de7f
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:
@@ -666,6 +655,3 @@ spec:
       securityContext:
         runAsNonRoot: true
       serviceAccountName: kubevirt-operator
-      tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists

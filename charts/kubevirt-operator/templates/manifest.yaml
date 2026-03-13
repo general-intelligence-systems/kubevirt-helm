@@ -1527,6 +1527,11 @@ spec:
                   components. Useful if KubeVirt is included as part of a product.
                   If ProductVersion is not specified, KubeVirt's version will be used.
                 type: string
+              serviceMonitorNamespace:
+                description: The namespace the service monitor will be deployed  When
+                  ServiceMonitorNamespace is set, then we'll install the service monitor
+                  object in that namespace otherwise we will use the monitoring namespace.
+                type: string
               uninstallStrategy:
                 description: Specifies if kubevirt can be deleted if workloads are
                   still present. This is mainly a precaution to avoid accidental data
@@ -4139,6 +4144,11 @@ spec:
                   components. Useful if KubeVirt is included as part of a product.
                   If ProductVersion is not specified, KubeVirt's version will be used.
                 type: string
+              serviceMonitorNamespace:
+                description: The namespace the service monitor will be deployed  When
+                  ServiceMonitorNamespace is set, then we'll install the service monitor
+                  object in that namespace otherwise we will use the monitoring namespace.
+                type: string
               uninstallStrategy:
                 description: Specifies if kubevirt can be deleted if workloads are
                   still present. This is mainly a precaution to avoid accidental data
@@ -5940,6 +5950,8 @@ rules:
   - virtualmachines/start
   - virtualmachines/stop
   - virtualmachines/restart
+  - virtualmachines/addvolume
+  - virtualmachines/removevolume
   verbs:
   - update
 - apiGroups:
@@ -6037,6 +6049,8 @@ rules:
   - virtualmachines/start
   - virtualmachines/stop
   - virtualmachines/restart
+  - virtualmachines/addvolume
+  - virtualmachines/removevolume
   verbs:
   - update
 - apiGroups:
@@ -6236,12 +6250,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.52.0
+          value: quay.io/kubevirt/virt-operator:v0.53.0-rc.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.52.0
+        image: quay.io/kubevirt/virt-operator:v0.53.0-rc.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

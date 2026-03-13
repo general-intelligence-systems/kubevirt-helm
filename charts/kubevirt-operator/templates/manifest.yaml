@@ -5533,6 +5533,20 @@ rules:
   - update
   - patch
 - apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - virtualmachineinstances/pause
+  - virtualmachineinstances/unpause
+  - virtualmachineinstances/addvolume
+  - virtualmachineinstances/removevolume
+  - virtualmachineinstances/freeze
+  - virtualmachineinstances/unfreeze
+  - virtualmachineinstances/softreboot
+  - virtualmachineinstances/portforward
+  verbs:
+  - update
+  - get
+- apiGroups:
   - ""
   resources:
   - namespaces
@@ -5541,22 +5555,6 @@ rules:
   - list
   - watch
   - patch
-- apiGroups:
-  - flavor.kubevirt.io
-  resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
-  - virtualmachinepreferences
-  - virtualmachineclusterpreferences
-  verbs:
-  - get
-  - delete
-  - create
-  - update
-  - patch
-  - list
-  - watch
-  - deletecollection
 - apiGroups:
   - ""
   resources:
@@ -5655,10 +5653,10 @@ rules:
   - list
   - watch
 - apiGroups:
-  - instancetype.kubevirt.io
+  - flavor.kubevirt.io
   resources:
-  - virtualmachineinstancetypes
-  - virtualmachineclusterinstancetypes
+  - virtualmachineflavors
+  - virtualmachineclusterflavors
   - virtualmachinepreferences
   - virtualmachineclusterpreferences
   verbs:
@@ -5882,10 +5880,10 @@ rules:
   - list
   - watch
 - apiGroups:
-  - instancetype.kubevirt.io
+  - flavor.kubevirt.io
   resources:
-  - virtualmachineinstancetypes
-  - virtualmachineclusterinstancetypes
+  - virtualmachineflavors
+  - virtualmachineclusterflavors
   - virtualmachinepreferences
   - virtualmachineclusterpreferences
   verbs:
@@ -5904,8 +5902,17 @@ rules:
   - clone.kubevirt.io
   resources:
   - virtualmachineclones
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - clone.kubevirt.io
+  resources:
   - virtualmachineclones/status
-  - virtualmachineclones/finalizers
   verbs:
   - get
   - list
@@ -5919,30 +5926,6 @@ rules:
   - namespaces
   verbs:
   - get
-- apiGroups:
-  - route.openshift.io
-  resources:
-  - routes
-  verbs:
-  - list
-  - get
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - list
-  - get
-  - watch
-- apiGroups:
-  - networking.k8s.io
-  resources:
-  - ingresses
-  verbs:
-  - list
-  - get
-  - watch
 - apiGroups:
   - kubevirt.io
   resources:
@@ -6101,10 +6084,10 @@ rules:
   - watch
   - deletecollection
 - apiGroups:
-  - instancetype.kubevirt.io
+  - flavor.kubevirt.io
   resources:
-  - virtualmachineinstancetypes
-  - virtualmachineclusterinstancetypes
+  - virtualmachineflavors
+  - virtualmachineclusterflavors
   - virtualmachinepreferences
   - virtualmachineclusterpreferences
   verbs:
@@ -6203,10 +6186,10 @@ rules:
   - list
   - watch
 - apiGroups:
-  - instancetype.kubevirt.io
+  - flavor.kubevirt.io
   resources:
-  - virtualmachineinstancetypes
-  - virtualmachineclusterinstancetypes
+  - virtualmachineflavors
+  - virtualmachineclusterflavors
   - virtualmachinepreferences
   - virtualmachineclusterpreferences
   verbs:
@@ -6275,10 +6258,10 @@ rules:
   - list
   - watch
 - apiGroups:
-  - instancetype.kubevirt.io
+  - flavor.kubevirt.io
   resources:
-  - virtualmachineinstancetypes
-  - virtualmachineclusterinstancetypes
+  - virtualmachineflavors
+  - virtualmachineclusterflavors
   - virtualmachinepreferences
   - virtualmachineclusterpreferences
   verbs:
@@ -6374,12 +6357,12 @@ spec:
         - virt-operator
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.57.1
+          value: quay.io/kubevirt/virt-operator:v0.55.2
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.57.1
+        image: quay.io/kubevirt/virt-operator:v0.55.2
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:
@@ -6399,15 +6382,13 @@ spec:
         resources:
           requests:
             cpu: 10m
-            memory: 250Mi
+            memory: 150Mi
         volumeMounts:
         - mountPath: /etc/virt-operator/certificates
           name: kubevirt-operator-certs
           readOnly: true
         - mountPath: /profile-data
           name: profile-data
-      nodeSelector:
-        kubernetes.io/os: linux
       priorityClassName: kubevirt-cluster-critical
       securityContext:
         runAsNonRoot: true

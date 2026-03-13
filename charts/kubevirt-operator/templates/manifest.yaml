@@ -502,6 +502,25 @@ spec:
                         type: array
                         x-kubernetes-list-type: atomic
                     type: object
+                  seccompConfiguration:
+                    description: SeccompConfiguration holds Seccomp configuration
+                      for Kubevirt components
+                    properties:
+                      virtualMachineInstanceProfile:
+                        description: VirtualMachineInstanceProfile defines what profile
+                          should be used with virt-launcher. Defaults to none
+                        properties:
+                          customProfile:
+                            description: CustomProfile allows to request arbitrary
+                              profile for virt-launcher
+                            properties:
+                              localhostProfile:
+                                type: string
+                              runtimeDefaultProfile:
+                                type: boolean
+                            type: object
+                        type: object
+                    type: object
                   selinuxLauncherType:
                     type: string
                   smbios:
@@ -3234,6 +3253,25 @@ spec:
                           type: object
                         type: array
                         x-kubernetes-list-type: atomic
+                    type: object
+                  seccompConfiguration:
+                    description: SeccompConfiguration holds Seccomp configuration
+                      for Kubevirt components
+                    properties:
+                      virtualMachineInstanceProfile:
+                        description: VirtualMachineInstanceProfile defines what profile
+                          should be used with virt-launcher. Defaults to none
+                        properties:
+                          customProfile:
+                            description: CustomProfile allows to request arbitrary
+                              profile for virt-launcher
+                            properties:
+                              localhostProfile:
+                                type: string
+                              runtimeDefaultProfile:
+                                type: boolean
+                            type: object
+                        type: object
                     type: object
                   selinuxLauncherType:
                     type: string
@@ -6047,6 +6085,8 @@ rules:
   resources:
   - virtualmachinepools
   - virtualmachinepools/finalizers
+  - virtualmachinepools/status
+  - virtualmachinepools/scale
   verbs:
   - watch
   - list
@@ -6291,6 +6331,7 @@ rules:
   - virtualmachineinstances/console
   - virtualmachineinstances/vnc
   - virtualmachineinstances/vnc/screenshot
+  - virtualmachineinstances/portforward
   - virtualmachineinstances/guestosinfo
   - virtualmachineinstances/filesystemlist
   - virtualmachineinstances/userlist
@@ -6306,13 +6347,13 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
-  - virtualmachineinstances/portforward
   verbs:
   - update
 - apiGroups:
   - subresources.kubevirt.io
   resources:
   - virtualmachines/expand-spec
+  - virtualmachines/portforward
   verbs:
   - get
 - apiGroups:
@@ -6408,6 +6449,7 @@ rules:
   - virtualmachineinstances/console
   - virtualmachineinstances/vnc
   - virtualmachineinstances/vnc/screenshot
+  - virtualmachineinstances/portforward
   - virtualmachineinstances/guestosinfo
   - virtualmachineinstances/filesystemlist
   - virtualmachineinstances/userlist
@@ -6423,13 +6465,13 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
-  - virtualmachineinstances/portforward
   verbs:
   - update
 - apiGroups:
   - subresources.kubevirt.io
   resources:
   - virtualmachines/expand-spec
+  - virtualmachines/portforward
   verbs:
   - get
 - apiGroups:
@@ -6659,14 +6701,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.59.0-alpha.2
+          value: quay.io/kubevirt/virt-operator:v0.59.0-rc.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.59.0-alpha.2
-        image: quay.io/kubevirt/virt-operator:v0.59.0-alpha.2
+          value: v0.59.0-rc.0
+        image: quay.io/kubevirt/virt-operator:v0.59.0-rc.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

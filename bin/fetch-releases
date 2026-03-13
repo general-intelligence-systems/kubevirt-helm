@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO="kubevirt/kubevirt"
+OUTFILE="data/releases.yaml"
+PER_PAGE=100
+
+mkdir -p data
+
+page=1
+all="[]"
+
+while true; do
+  resp=$(curl -sf "https://api.github.com/repos/${REPO}/releases?per_page=${PER_PAGE}&page=${page}")
+  count=$(echo "$resp" | jq 'length')
+  [ "$count" -eq 0 ] && break
+
+  # reshape each release to just the fields we care about
+  batch=$(echo "$resp" | jq '[.[] | {
+    tag: .tag_name,
+    prerelease: .prerelease,
+    draft: .draft,
+    published_at: .published_at,
+    assets: [.assets[] | {name: .name, url: .browser_download_url}]
+  }]')
+
+  all=$(echo "$all" "$batch" | jq -s '.[0] + .[1]')
+  page=$((page + 1))
+done
+
+echo "$all" | yq -P > "$OUTFILE"
+echo "Wrote $(echo "$all" | jq 'length') releases to ${OUTFILE}"

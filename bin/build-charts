@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+VERSION="${1:?Usage: bin/build-charts <version>}"
+
+# normalize: accept both v1.7.0 and 1.7.0
+[[ "$VERSION" != v* ]] && VERSION="v${VERSION}"
+CHART_VERSION="${VERSION#v}"
+
+RELEASES_FILE="data/releases.yaml"
+
+if [[ ! -f "$RELEASES_FILE" ]]; then
+  echo "Error: ${RELEASES_FILE} not found. Run bin/fetch-releases first." >&2
+  exit 1
+fi
+
+# find the release entry matching this tag
+RELEASE=$(yq -o=json ".[] | select(.tag == \"${VERSION}\")" "$RELEASES_FILE")
+
+if [[ -z "$RELEASE" ]]; then
+  echo "Error: version ${VERSION} not found in ${RELEASES_FILE}" >&2
+  exit 1
+fi
+
+# wipe and recreate charts/
+rm -rf charts
+mkdir -p charts
+
+# iterate over yaml assets only
+ASSETS=$(echo "$RELEASE" | jq -c '.assets[] | select(.name | endswith(".yaml"))')
+
+while IFS= read -r asset; do
+  name=$(echo "$asset" | jq -r '.name')
+  url=$(echo "$asset" | jq -r '.url')
+  chart_name="${name%.yaml}"
+  chart_dir="charts/${chart_name}"
+
+  echo "  ${chart_name} @ ${CHART_VERSION}"
+
+  mkdir -p "${chart_dir}/templates"
+  curl -sfL -o "${chart_dir}/templates/manifest.yaml" "$url"
+
+  cat > "${chart_dir}/Chart.yaml" <<EOF
+apiVersion: v2
+name: ${chart_name}
+description: KubeVirt ${chart_name} manifests
+type: application
+version: ${CHART_VERSION}
+appVersion: "${CHART_VERSION}"
+EOF
+
+done <<< "$ASSETS"
+
+git add charts/
+git commit -m "chore: sync kubevirt ${VERSION}"
+git tag "$VERSION"
+
+echo "Done: committed and tagged ${VERSION}"

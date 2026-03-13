@@ -51,12 +51,35 @@ spec:
                 properties:
                   selfSigned:
                     properties:
+                      ca:
+                        description: CA configuration CA certs are kept in the CA bundle as long as they are valid
+                        properties:
+                          duration:
+                            description: The requested 'duration' (i.e. lifetime) of the Certificate.
+                            type: string
+                          renewBefore:
+                            description: The amount of time before the currently issued certificate's "notAfter" time that we will begin to attempt to renew the certificate.
+                            type: string
+                        type: object
                       caOverlapInterval:
+                        description: Deprecated. Use CA.Duration and CA.RenewBefore instead
                         type: string
                       caRotateInterval:
+                        description: Deprecated. Use CA.Duration instead
                         type: string
                       certRotateInterval:
+                        description: Deprecated. Use Server.Duration instead
                         type: string
+                      server:
+                        description: Server configuration Certs are rotated and discarded
+                        properties:
+                          duration:
+                            description: The requested 'duration' (i.e. lifetime) of the Certificate.
+                            type: string
+                          renewBefore:
+                            description: The amount of time before the currently issued certificate's "notAfter" time that we will begin to attempt to renew the certificate.
+                            type: string
+                        type: object
                     type: object
                 type: object
               configuration:
@@ -221,6 +244,7 @@ spec:
                         type: string
                     type: object
                   supportedGuestAgentVersions:
+                    description: deprecated
                     items:
                       type: string
                     type: array
@@ -1095,6 +1119,11 @@ spec:
                     resource:
                       description: resource is the resource type of the thing you're tracking
                       type: string
+                  required:
+                  - group
+                  - lastGeneration
+                  - name
+                  - resource
                   type: object
                 type: array
                 x-kubernetes-list-type: atomic
@@ -1155,12 +1184,35 @@ spec:
                 properties:
                   selfSigned:
                     properties:
+                      ca:
+                        description: CA configuration CA certs are kept in the CA bundle as long as they are valid
+                        properties:
+                          duration:
+                            description: The requested 'duration' (i.e. lifetime) of the Certificate.
+                            type: string
+                          renewBefore:
+                            description: The amount of time before the currently issued certificate's "notAfter" time that we will begin to attempt to renew the certificate.
+                            type: string
+                        type: object
                       caOverlapInterval:
+                        description: Deprecated. Use CA.Duration and CA.RenewBefore instead
                         type: string
                       caRotateInterval:
+                        description: Deprecated. Use CA.Duration instead
                         type: string
                       certRotateInterval:
+                        description: Deprecated. Use Server.Duration instead
                         type: string
+                      server:
+                        description: Server configuration Certs are rotated and discarded
+                        properties:
+                          duration:
+                            description: The requested 'duration' (i.e. lifetime) of the Certificate.
+                            type: string
+                          renewBefore:
+                            description: The amount of time before the currently issued certificate's "notAfter" time that we will begin to attempt to renew the certificate.
+                            type: string
+                        type: object
                     type: object
                 type: object
               configuration:
@@ -1325,6 +1377,7 @@ spec:
                         type: string
                     type: object
                   supportedGuestAgentVersions:
+                    description: deprecated
                     items:
                       type: string
                     type: array
@@ -2199,6 +2252,11 @@ spec:
                     resource:
                       description: resource is the resource type of the thing you're tracking
                       type: string
+                  required:
+                  - group
+                  - lastGeneration
+                  - name
+                  - resource
                   type: object
                 type: array
                 x-kubernetes-list-type: atomic
@@ -2496,6 +2554,16 @@ rules:
   verbs:
   - put
 - apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - virtualmachineinstances/pause
+  - virtualmachineinstances/unpause
+  - virtualmachineinstances/addvolume
+  - virtualmachineinstances/removevolume
+  verbs:
+  - update
+  - get
+- apiGroups:
   - ""
   resources:
   - namespaces
@@ -2685,7 +2753,6 @@ rules:
   - virtualmachineinstances/addvolume
   - virtualmachineinstances/removevolume
   verbs:
-  - get
   - update
 - apiGroups:
   - cdi.kubevirt.io
@@ -2816,6 +2883,9 @@ rules:
   resources:
   - virtualmachineinstances/console
   - virtualmachineinstances/vnc
+  - virtualmachineinstances/guestosinfo
+  - virtualmachineinstances/filesystemlist
+  - virtualmachineinstances/userlist
   verbs:
   - get
 - apiGroups:
@@ -2826,7 +2896,6 @@ rules:
   - virtualmachineinstances/addvolume
   - virtualmachineinstances/removevolume
   verbs:
-  - get
   - update
 - apiGroups:
   - subresources.kubevirt.io
@@ -2873,6 +2942,9 @@ rules:
   resources:
   - virtualmachineinstances/console
   - virtualmachineinstances/vnc
+  - virtualmachineinstances/guestosinfo
+  - virtualmachineinstances/filesystemlist
+  - virtualmachineinstances/userlist
   verbs:
   - get
 - apiGroups:
@@ -2883,7 +2955,6 @@ rules:
   - virtualmachineinstances/addvolume
   - virtualmachineinstances/removevolume
   verbs:
-  - get
   - update
 - apiGroups:
   - subresources.kubevirt.io
@@ -2930,6 +3001,14 @@ rules:
   verbs:
   - get
   - list
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - virtualmachineinstances/guestosinfo
+  - virtualmachineinstances/filesystemlist
+  - virtualmachineinstances/userlist
+  verbs:
+  - get
 - apiGroups:
   - kubevirt.io
   resources:
@@ -3025,12 +3104,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.40.1
+          value: quay.io/kubevirt/virt-operator:v0.41.4
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.40.1
+        image: quay.io/kubevirt/virt-operator:v0.41.4
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:
@@ -3047,7 +3126,10 @@ spec:
             scheme: HTTPS
           initialDelaySeconds: 5
           timeoutSeconds: 10
-        resources: {}
+        resources:
+          requests:
+            cpu: 10m
+            memory: 150Mi
         volumeMounts:
         - mountPath: /etc/virt-operator/certificates
           name: kubevirt-operator-certs

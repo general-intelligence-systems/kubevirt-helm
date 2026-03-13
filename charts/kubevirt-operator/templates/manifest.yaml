@@ -5533,20 +5533,6 @@ rules:
   - update
   - patch
 - apiGroups:
-  - subresources.kubevirt.io
-  resources:
-  - virtualmachineinstances/pause
-  - virtualmachineinstances/unpause
-  - virtualmachineinstances/addvolume
-  - virtualmachineinstances/removevolume
-  - virtualmachineinstances/freeze
-  - virtualmachineinstances/unfreeze
-  - virtualmachineinstances/softreboot
-  - virtualmachineinstances/portforward
-  verbs:
-  - update
-  - get
-- apiGroups:
   - ""
   resources:
   - namespaces
@@ -5555,6 +5541,22 @@ rules:
   - list
   - watch
   - patch
+- apiGroups:
+  - flavor.kubevirt.io
+  resources:
+  - virtualmachineflavors
+  - virtualmachineclusterflavors
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
+  verbs:
+  - get
+  - delete
+  - create
+  - update
+  - patch
+  - list
+  - watch
+  - deletecollection
 - apiGroups:
   - ""
   resources:
@@ -5653,10 +5655,10 @@ rules:
   - list
   - watch
 - apiGroups:
-  - flavor.kubevirt.io
+  - instancetype.kubevirt.io
   resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
   - virtualmachinepreferences
   - virtualmachineclusterpreferences
   verbs:
@@ -5879,10 +5881,10 @@ rules:
   - list
   - watch
 - apiGroups:
-  - flavor.kubevirt.io
+  - instancetype.kubevirt.io
   resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
   - virtualmachinepreferences
   - virtualmachineclusterpreferences
   verbs:
@@ -5925,6 +5927,30 @@ rules:
   - namespaces
   verbs:
   - get
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes
+  verbs:
+  - list
+  - get
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - list
+  - get
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - list
+  - get
+  - watch
 - apiGroups:
   - kubevirt.io
   resources:
@@ -6083,10 +6109,10 @@ rules:
   - watch
   - deletecollection
 - apiGroups:
-  - flavor.kubevirt.io
+  - instancetype.kubevirt.io
   resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
   - virtualmachinepreferences
   - virtualmachineclusterpreferences
   verbs:
@@ -6185,10 +6211,10 @@ rules:
   - list
   - watch
 - apiGroups:
-  - flavor.kubevirt.io
+  - instancetype.kubevirt.io
   resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
   - virtualmachinepreferences
   - virtualmachineclusterpreferences
   verbs:
@@ -6257,10 +6283,10 @@ rules:
   - list
   - watch
 - apiGroups:
-  - flavor.kubevirt.io
+  - instancetype.kubevirt.io
   resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
   - virtualmachinepreferences
   - virtualmachineclusterpreferences
   verbs:
@@ -6356,12 +6382,12 @@ spec:
         - virt-operator
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.55.1
+          value: quay.io/kubevirt/virt-operator:v0.56.0-rc.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.55.1
+        image: quay.io/kubevirt/virt-operator:v0.56.0-rc.1
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:
@@ -6381,13 +6407,15 @@ spec:
         resources:
           requests:
             cpu: 10m
-            memory: 150Mi
+            memory: 250Mi
         volumeMounts:
         - mountPath: /etc/virt-operator/certificates
           name: kubevirt-operator-certs
           readOnly: true
         - mountPath: /profile-data
           name: profile-data
+      nodeSelector:
+        kubernetes.io/os: linux
       priorityClassName: kubevirt-cluster-critical
       securityContext:
         runAsNonRoot: true

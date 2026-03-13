@@ -38,14 +38,6 @@ spec:
     storage: true
 
 ---
-apiVersion: scheduling.k8s.io/v1
-kind: PriorityClass
-metadata:
-  name: kubevirt-cluster-critical
-value: 1000000000
-globalDefault: false
-description: "This priority class should be used for core kubevirt components only."
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -638,22 +630,22 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: index.docker.io/kubevirt/virt-operator@sha256:08aefec3a2d2485212486df804a9a7039101621dc884565fb6526778ad5728da
+          value: index.docker.io/kubevirt/virt-operator@sha256:84c50ed3c699265512c858a8bafa9ecd662735695ce5a09c15c13c97773f15f2
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.28.0-rc.2
+          value: v0.28.0
         - name: VIRT_API_SHASUM
-          value: sha256:6e5313b820a7775d4a8a445cbc20cf5982cff7ffb2d3c92470cd4092e634ca7a
+          value: sha256:5a40b1559fdb4ec5626e7fd88a89ae21a41cca124162b97f7d9f795b9f8e2be3
         - name: VIRT_CONTROLLER_SHASUM
-          value: sha256:7572a7de7292af2b139c5b3c64e52af993ec2345d7bcef9092c087a1ecd47b0c
+          value: sha256:25fc5313b4e2bcee20b5670efd51833ccc02b1c381de4a240e7ceeba9eecd8f5
         - name: VIRT_HANDLER_SHASUM
-          value: sha256:77e133f15cb00aed206ffe0048b26dc59b60dcc14d2f699e92603abe7c1f19c0
+          value: sha256:d2903f3c5d38e768d9aa8015db82a5aef450db3114df9e2bb9b4f234407468c3
         - name: VIRT_LAUNCHER_SHASUM
-          value: sha256:ce71948521b0a64ed12525f22f0ca55ce5a70b1fdfac2adfe3c54946775fbf62
-        image: index.docker.io/kubevirt/virt-operator@sha256:08aefec3a2d2485212486df804a9a7039101621dc884565fb6526778ad5728da
+          value: sha256:9875bb3c0b303280eee52c63b8131554a72f1635811b12370de171eb91695e6f
+        image: index.docker.io/kubevirt/virt-operator@sha256:84c50ed3c699265512c858a8bafa9ecd662735695ce5a09c15c13c97773f15f2
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:
@@ -671,7 +663,6 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 10
         resources: {}
-      priorityClassName: kubevirt-cluster-critical
       securityContext:
         runAsNonRoot: true
       serviceAccountName: kubevirt-operator

@@ -313,7 +313,13 @@ spec:
                     description: MediatedDevicesConfiguration holds information about
                       MDEV types to be defined, if available
                     properties:
+                      mediatedDeviceTypes:
+                        items:
+                          type: string
+                        type: array
+                        x-kubernetes-list-type: atomic
                       mediatedDevicesTypes:
+                        description: Deprecated. Use mediatedDeviceTypes instead.
                         items:
                           type: string
                         type: array
@@ -324,7 +330,13 @@ spec:
                             about MDEV types to be defined in a specifc node that
                             matches the NodeSelector field.
                           properties:
+                            mediatedDeviceTypes:
+                              items:
+                                type: string
+                              type: array
+                              x-kubernetes-list-type: atomic
                             mediatedDevicesTypes:
+                              description: Deprecated. Use mediatedDeviceTypes instead.
                               items:
                                 type: string
                               type: array
@@ -338,7 +350,6 @@ spec:
                                 on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
                               type: object
                           required:
-                          - mediatedDevicesTypes
                           - nodeSelector
                           type: object
                         type: array
@@ -3021,7 +3032,13 @@ spec:
                     description: MediatedDevicesConfiguration holds information about
                       MDEV types to be defined, if available
                     properties:
+                      mediatedDeviceTypes:
+                        items:
+                          type: string
+                        type: array
+                        x-kubernetes-list-type: atomic
                       mediatedDevicesTypes:
+                        description: Deprecated. Use mediatedDeviceTypes instead.
                         items:
                           type: string
                         type: array
@@ -3032,7 +3049,13 @@ spec:
                             about MDEV types to be defined in a specifc node that
                             matches the NodeSelector field.
                           properties:
+                            mediatedDeviceTypes:
+                              items:
+                                type: string
+                              type: array
+                              x-kubernetes-list-type: atomic
                             mediatedDevicesTypes:
+                              description: Deprecated. Use mediatedDeviceTypes instead.
                               items:
                                 type: string
                               type: array
@@ -3046,7 +3069,6 @@ spec:
                                 on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
                               type: object
                           required:
-                          - mediatedDevicesTypes
                           - nodeSelector
                           type: object
                         type: array
@@ -5825,6 +5847,7 @@ rules:
   resources:
   - virtualmachinesnapshots
   - virtualmachinerestores
+  - virtualmachinesnapshotcontents
   verbs:
   - get
   - list
@@ -5965,6 +5988,7 @@ rules:
   - create
   - delete
   - get
+  - update
 - apiGroups:
   - ""
   resources:
@@ -6259,6 +6283,12 @@ rules:
 - apiGroups:
   - subresources.kubevirt.io
   resources:
+  - virtualmachines/expand-spec
+  verbs:
+  - get
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
   - virtualmachines/start
   - virtualmachines/stop
   - virtualmachines/restart
@@ -6266,6 +6296,12 @@ rules:
   - virtualmachines/removevolume
   - virtualmachines/migrate
   - virtualmachines/memorydump
+  verbs:
+  - update
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - expand-vm-spec
   verbs:
   - update
 - apiGroups:
@@ -6364,6 +6400,12 @@ rules:
 - apiGroups:
   - subresources.kubevirt.io
   resources:
+  - virtualmachines/expand-spec
+  verbs:
+  - get
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
   - virtualmachines/start
   - virtualmachines/stop
   - virtualmachines/restart
@@ -6371,6 +6413,12 @@ rules:
   - virtualmachines/removevolume
   - virtualmachines/migrate
   - virtualmachines/memorydump
+  verbs:
+  - update
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - expand-vm-spec
   verbs:
   - update
 - apiGroups:
@@ -6448,11 +6496,18 @@ rules:
 - apiGroups:
   - subresources.kubevirt.io
   resources:
+  - virtualmachines/expand-spec
   - virtualmachineinstances/guestosinfo
   - virtualmachineinstances/filesystemlist
   - virtualmachineinstances/userlist
   verbs:
   - get
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - expand-vm-spec
+  verbs:
+  - update
 - apiGroups:
   - kubevirt.io
   resources:
@@ -6575,12 +6630,14 @@ spec:
         - virt-operator
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.59.0-alpha.0
+          value: quay.io/kubevirt/virt-operator:v0.59.0-alpha.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.59.0-alpha.0
+        - name: KUBEVIRT_VERSION
+          value: v0.59.0-alpha.1
+        image: quay.io/kubevirt/virt-operator:v0.59.0-alpha.1
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

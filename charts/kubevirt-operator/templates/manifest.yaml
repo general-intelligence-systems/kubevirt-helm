@@ -788,22 +788,22 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: index.docker.io/kubevirt/virt-operator@sha256:36567be0207e91a0948dc65f343b336b34f2125199bc0219678facf29cc092f2
+          value: index.docker.io/kubevirt/virt-operator@sha256:640b0deedf0c1c257e36279b16138fa558769320aca149f84bc9cf0b44fb0fb4
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.34.1
+          value: v0.34.2
         - name: VIRT_API_SHASUM
-          value: sha256:91370fcd4a7a1b95d003f7087e8371de993e370f27f936e671d3459c1a660b65
+          value: sha256:cd9368648d33fe980388d36bba51ce383213166235a79266e7112986d79f764d
         - name: VIRT_CONTROLLER_SHASUM
-          value: sha256:7b142d581d4692095c46a0a9584a26669b760f5a999632d9634cc60e9cfbec84
+          value: sha256:c9cee861c34342227822f1a1052d14c265860518f337535eea2673e216986b7c
         - name: VIRT_HANDLER_SHASUM
-          value: sha256:26a6e1be08829ab45a01488f009b1f21295577a028d27ce89431d6538d383db6
+          value: sha256:bdc459f22336bad9962b405936786c0d076a3d695d4348bb015b0ab041ac5e5d
         - name: VIRT_LAUNCHER_SHASUM
-          value: sha256:fc6222c0fd94b39dbe4f3debb3147a5668a46ccb51374c0c3a822859582ba2d0
-        image: index.docker.io/kubevirt/virt-operator@sha256:36567be0207e91a0948dc65f343b336b34f2125199bc0219678facf29cc092f2
+          value: sha256:cadfb07ba28197a656fdad4fd9c44b238172cdc02631094ca7e958d003ae6efe
+        image: index.docker.io/kubevirt/virt-operator@sha256:640b0deedf0c1c257e36279b16138fa558769320aca149f84bc9cf0b44fb0fb4
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

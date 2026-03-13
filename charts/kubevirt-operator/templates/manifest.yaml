@@ -1497,9 +1497,11 @@ spec:
                         type: array
                     type: object
                   replicas:
-                    description: replicas indicates how many replicas should be created
+                    description: 'replicas indicates how many replicas should be created
                       for each KubeVirt infrastructure component (like virt-api or
-                      virt-controller). Defaults to 2.
+                      virt-controller). Defaults to 2. WARNING: this is an advanced
+                      feature that prevents auto-scaling for core kubevirt components.
+                      Please use with caution!'
                     type: integer
                 type: object
               monitorAccount:
@@ -2526,9 +2528,11 @@ spec:
                         type: array
                     type: object
                   replicas:
-                    description: replicas indicates how many replicas should be created
+                    description: 'replicas indicates how many replicas should be created
                       for each KubeVirt infrastructure component (like virt-api or
-                      virt-controller). Defaults to 2.
+                      virt-controller). Defaults to 2. WARNING: this is an advanced
+                      feature that prevents auto-scaling for core kubevirt components.
+                      Please use with caution!'
                     type: integer
                 type: object
             type: object
@@ -2602,6 +2606,9 @@ spec:
                 type: string
               observedDeploymentID:
                 type: string
+              observedGeneration:
+                format: int64
+                type: integer
               observedKubeVirtRegistry:
                 type: string
               observedKubeVirtVersion:
@@ -4102,9 +4109,11 @@ spec:
                         type: array
                     type: object
                   replicas:
-                    description: replicas indicates how many replicas should be created
+                    description: 'replicas indicates how many replicas should be created
                       for each KubeVirt infrastructure component (like virt-api or
-                      virt-controller). Defaults to 2.
+                      virt-controller). Defaults to 2. WARNING: this is an advanced
+                      feature that prevents auto-scaling for core kubevirt components.
+                      Please use with caution!'
                     type: integer
                 type: object
               monitorAccount:
@@ -5131,9 +5140,11 @@ spec:
                         type: array
                     type: object
                   replicas:
-                    description: replicas indicates how many replicas should be created
+                    description: 'replicas indicates how many replicas should be created
                       for each KubeVirt infrastructure component (like virt-api or
-                      virt-controller). Defaults to 2.
+                      virt-controller). Defaults to 2. WARNING: this is an advanced
+                      feature that prevents auto-scaling for core kubevirt components.
+                      Please use with caution!'
                     type: integer
                 type: object
             type: object
@@ -5207,6 +5218,9 @@ spec:
                 type: string
               observedDeploymentID:
                 type: string
+              observedGeneration:
+                format: int64
+                type: integer
               observedKubeVirtRegistry:
                 type: string
               observedKubeVirtVersion:
@@ -6222,12 +6236,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.51.0
+          value: quay.io/kubevirt/virt-operator:v0.52.0-rc.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.51.0
+        image: quay.io/kubevirt/virt-operator:v0.52.0-rc.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

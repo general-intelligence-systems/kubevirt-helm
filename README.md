@@ -5,7 +5,7 @@ All charts starting form v0.12.0 are included.
 
 ## Implementation
 
-Basically the charts are the equivalent of doing the following (taken from the [quickstart guide](https://kubevirt.io/quickstart_cloud/)). There are no helm values to apply.
+Basically the charts are the equivalent of doing the following steps from the [quickstart guide](https://kubevirt.io/quickstart_cloud/). There are no helm values to apply.
 
 ```bash
 export VERSION=$(curl -s https://storage.googleapis.com/kubevirt-prow/release/kubevirt/kubevirt/stable.txt)

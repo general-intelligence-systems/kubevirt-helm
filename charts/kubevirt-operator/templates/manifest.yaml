@@ -296,10 +296,6 @@ spec:
                   developerConfiguration:
                     description: DeveloperConfiguration holds developer options
                     properties:
-                      clusterProfiler:
-                        description: Enable the ability to pprof profile KubeVirt
-                          control plane
-                        type: boolean
                       cpuAllocationRatio:
                         description: |-
                           For each requested virtual CPU, CPUAllocationRatio defines how much physical CPU to request per VMI
@@ -348,8 +344,6 @@ spec:
                           virtLauncher:
                             type: integer
                           virtOperator:
-                            type: integer
-                          virtSynchronizationController:
                             type: integer
                         type: object
                       memoryOvercommit:
@@ -2146,10 +2140,6 @@ spec:
                    When ServiceMonitorNamespace is set, then we'll install the service monitor object in that namespace
                   otherwise we will use the monitoring namespace.
                 type: string
-              synchronizationPort:
-                description: Specify the port to listen on for VMI status synchronization
-                  traffic. Default is 9185
-                type: string
               uninstallStrategy:
                 description: |-
                   Specifies if kubevirt can be deleted if workloads are still present.
@@ -3281,11 +3271,6 @@ spec:
                 description: KubeVirtPhase is a label for the phase of a KubeVirt
                   deployment at the current time.
                 type: string
-              synchronizationAddresses:
-                items:
-                  type: string
-                type: array
-                x-kubernetes-list-type: atomic
               targetDeploymentConfig:
                 type: string
               targetDeploymentID:
@@ -3575,10 +3560,6 @@ spec:
                   developerConfiguration:
                     description: DeveloperConfiguration holds developer options
                     properties:
-                      clusterProfiler:
-                        description: Enable the ability to pprof profile KubeVirt
-                          control plane
-                        type: boolean
                       cpuAllocationRatio:
                         description: |-
                           For each requested virtual CPU, CPUAllocationRatio defines how much physical CPU to request per VMI
@@ -3627,8 +3608,6 @@ spec:
                           virtLauncher:
                             type: integer
                           virtOperator:
-                            type: integer
-                          virtSynchronizationController:
                             type: integer
                         type: object
                       memoryOvercommit:
@@ -5425,10 +5404,6 @@ spec:
                    When ServiceMonitorNamespace is set, then we'll install the service monitor object in that namespace
                   otherwise we will use the monitoring namespace.
                 type: string
-              synchronizationPort:
-                description: Specify the port to listen on for VMI status synchronization
-                  traffic. Default is 9185
-                type: string
               uninstallStrategy:
                 description: |-
                   Specifies if kubevirt can be deleted if workloads are still present.
@@ -6560,11 +6535,6 @@ spec:
                 description: KubeVirtPhase is a label for the phase of a KubeVirt
                   deployment at the current time.
                 type: string
-              synchronizationAddresses:
-                items:
-                  type: string
-                type: array
-                x-kubernetes-list-type: atomic
               targetDeploymentConfig:
                 type: string
               targetDeploymentID:
@@ -6640,8 +6610,6 @@ rules:
   - kubevirt-virt-api-certs
   - kubevirt-controller-certs
   - kubevirt-exportproxy-certs
-  - kubevirt-synchronization-controller-certs
-  - kubevirt-synchronization-controller-server-certs
   resources:
   - secrets
   verbs:
@@ -6753,28 +6721,6 @@ rules:
   - get
   - list
   - watch
-- apiGroups:
-  - ""
-  resourceNames:
-  - kubevirt-ca
-  resources:
-  - configmaps
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - coordination.k8s.io
-  resources:
-  - leases
-  verbs:
-  - get
-  - list
-  - watch
-  - delete
-  - update
-  - create
-  - patch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -6998,7 +6944,6 @@ rules:
   - persistentvolumeclaims
   verbs:
   - get
-  - list
 - apiGroups:
   - kubevirt.io
   resources:
@@ -7395,15 +7340,6 @@ rules:
   - get
   - delete
 - apiGroups:
-  - resource.k8s.io
-  resources:
-  - resourceslices
-  - resourceclaims
-  verbs:
-  - list
-  - watch
-  - get
-- apiGroups:
   - kubevirt.io
   resources:
   - virtualmachineinstances
@@ -7477,48 +7413,6 @@ rules:
 - apiGroups:
   - kubevirt.io
   resources:
-  - virtualmachineinstances
-  verbs:
-  - get
-  - list
-  - watch
-  - update
-  - patch
-- apiGroups:
-  - kubevirt.io
-  resources:
-  - virtualmachineinstancemigrations
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - kubevirt.io
-  resources:
-  - kubevirts
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - events
-  verbs:
-  - update
-  - create
-  - patch
-- apiGroups:
-  - apiextensions.k8s.io
-  resources:
-  - customresourcedefinitions
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - kubevirt.io
-  resources:
   - kubevirts
   verbs:
   - get
@@ -7544,8 +7438,6 @@ rules:
   - virtualmachineinstances/sev/fetchcertchain
   - virtualmachineinstances/sev/querylaunchmeasurement
   - virtualmachineinstances/usbredir
-  - virtualmachines/objectgraph
-  - virtualmachineinstances/objectgraph
   verbs:
   - get
 - apiGroups:
@@ -7702,8 +7594,6 @@ rules:
   - virtualmachineinstances/sev/fetchcertchain
   - virtualmachineinstances/sev/querylaunchmeasurement
   - virtualmachineinstances/usbredir
-  - virtualmachines/objectgraph
-  - virtualmachineinstances/objectgraph
   verbs:
   - get
 - apiGroups:
@@ -7864,8 +7754,6 @@ rules:
   - virtualmachineinstances/userlist
   - virtualmachineinstances/sev/fetchcertchain
   - virtualmachineinstances/sev/querylaunchmeasurement
-  - virtualmachines/objectgraph
-  - virtualmachineinstances/objectgraph
   verbs:
   - get
 - apiGroups:
@@ -8042,22 +7930,15 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.6.1
+          value: quay.io/kubevirt/virt-operator:v1.5.3
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.6.1
-        image: quay.io/kubevirt/virt-operator:v1.6.1
+          value: v1.5.3
+        image: quay.io/kubevirt/virt-operator:v1.5.3
         imagePullPolicy: IfNotPresent
-        livenessProbe:
-          httpGet:
-            path: /metrics
-            port: 8443
-            scheme: HTTPS
-          initialDelaySeconds: 5
-          timeoutSeconds: 10
         name: virt-operator
         ports:
         - containerPort: 8443
@@ -8084,7 +7965,6 @@ spec:
             - ALL
           seccompProfile:
             type: RuntimeDefault
-        terminationMessagePolicy: FallbackToLogsOnError
         volumeMounts:
         - mountPath: /etc/virt-operator/certificates
           name: kubevirt-operator-certs

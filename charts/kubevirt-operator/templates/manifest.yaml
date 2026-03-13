@@ -97,6 +97,68 @@ spec:
               configuration:
                 description: holds kubevirt configurations. same as the virt-configMap
                 properties:
+                  apiConfiguration:
+                    description: ReloadableComponentConfiguration holds all generic
+                      k8s configuration options which can be reloaded by components
+                      without requiring a restart.
+                    properties:
+                      restClient:
+                        description: RestClient can be used to tune certain aspects
+                          of the k8s client in use.
+                        properties:
+                          rateLimiter:
+                            description: RateLimiter allows selecting and configuring
+                              different rate limiters for the k8s client.
+                            properties:
+                              tokenBucketRateLimiter:
+                                properties:
+                                  burst:
+                                    description: Maximum burst for throttle. If it's
+                                      zero, the component default will be used
+                                    type: integer
+                                  qps:
+                                    description: QPS indicates the maximum QPS to
+                                      the apiserver from this client. If it's zero,
+                                      the component default will be used
+                                    type: number
+                                required:
+                                - burst
+                                - qps
+                                type: object
+                            type: object
+                        type: object
+                    type: object
+                  controllerConfiguration:
+                    description: ReloadableComponentConfiguration holds all generic
+                      k8s configuration options which can be reloaded by components
+                      without requiring a restart.
+                    properties:
+                      restClient:
+                        description: RestClient can be used to tune certain aspects
+                          of the k8s client in use.
+                        properties:
+                          rateLimiter:
+                            description: RateLimiter allows selecting and configuring
+                              different rate limiters for the k8s client.
+                            properties:
+                              tokenBucketRateLimiter:
+                                properties:
+                                  burst:
+                                    description: Maximum burst for throttle. If it's
+                                      zero, the component default will be used
+                                    type: integer
+                                  qps:
+                                    description: QPS indicates the maximum QPS to
+                                      the apiserver from this client. If it's zero,
+                                      the component default will be used
+                                    type: number
+                                required:
+                                - burst
+                                - qps
+                                type: object
+                            type: object
+                        type: object
+                    type: object
                   cpuModel:
                     type: string
                   cpuRequest:
@@ -168,18 +230,62 @@ spec:
                       pvcTolerateLessSpaceUpToPercent:
                         type: integer
                       useEmulation:
+                        description: UseEmulation can be set to true to allow fallback
+                          to software emulation in case hardware-assisted emulation
+                          is not available.
                         type: boolean
                     type: object
                   emulatedMachines:
                     items:
                       type: string
                     type: array
+                  handlerConfiguration:
+                    description: ReloadableComponentConfiguration holds all generic
+                      k8s configuration options which can be reloaded by components
+                      without requiring a restart.
+                    properties:
+                      restClient:
+                        description: RestClient can be used to tune certain aspects
+                          of the k8s client in use.
+                        properties:
+                          rateLimiter:
+                            description: RateLimiter allows selecting and configuring
+                              different rate limiters for the k8s client.
+                            properties:
+                              tokenBucketRateLimiter:
+                                properties:
+                                  burst:
+                                    description: Maximum burst for throttle. If it's
+                                      zero, the component default will be used
+                                    type: integer
+                                  qps:
+                                    description: QPS indicates the maximum QPS to
+                                      the apiserver from this client. If it's zero,
+                                      the component default will be used
+                                    type: number
+                                required:
+                                - burst
+                                - qps
+                                type: object
+                            type: object
+                        type: object
+                    type: object
                   imagePullPolicy:
                     description: PullPolicy describes a policy for if/when to pull
                       a container image
                     type: string
                   machineType:
                     type: string
+                  mediatedDevicesConfiguration:
+                    description: MediatedDevicesConfiguration holds inforamtion about
+                      MDEV types to be defined, if available
+                    properties:
+                      mediatedDevicesTypes:
+                        items:
+                          type: string
+                        type: array
+                        x-kubernetes-list-type: atomic
+                    type: object
                   memBalloonStatsPeriod:
                     format: int32
                     type: integer
@@ -264,8 +370,8 @@ spec:
                                 and monitoring to an external device plugin
                               type: boolean
                             pciVendorSelector:
-                              description: The vendor_id:product_id tupple of the
-                                PCI device
+                              description: The vendor_id:product_id tuple of the PCI
+                                device
                               type: string
                             resourceName:
                               description: The name of the resource that is representing
@@ -304,6 +410,37 @@ spec:
                     type: array
                   virtualMachineInstancesPerNode:
                     type: integer
+                  webhookConfiguration:
+                    description: ReloadableComponentConfiguration holds all generic
+                      k8s configuration options which can be reloaded by components
+                      without requiring a restart.
+                    properties:
+                      restClient:
+                        description: RestClient can be used to tune certain aspects
+                          of the k8s client in use.
+                        properties:
+                          rateLimiter:
+                            description: RateLimiter allows selecting and configuring
+                              different rate limiters for the k8s client.
+                            properties:
+                              tokenBucketRateLimiter:
+                                properties:
+                                  burst:
+                                    description: Maximum burst for throttle. If it's
+                                      zero, the component default will be used
+                                    type: integer
+                                  qps:
+                                    description: QPS indicates the maximum QPS to
+                                      the apiserver from this client. If it's zero,
+                                      the component default will be used
+                                    type: number
+                                required:
+                                - burst
+                                - qps
+                                type: object
+                            type: object
+                        type: object
+                    type: object
                 type: object
               customizeComponents:
                 properties:
@@ -1996,6 +2133,68 @@ spec:
               configuration:
                 description: holds kubevirt configurations. same as the virt-configMap
                 properties:
+                  apiConfiguration:
+                    description: ReloadableComponentConfiguration holds all generic
+                      k8s configuration options which can be reloaded by components
+                      without requiring a restart.
+                    properties:
+                      restClient:
+                        description: RestClient can be used to tune certain aspects
+                          of the k8s client in use.
+                        properties:
+                          rateLimiter:
+                            description: RateLimiter allows selecting and configuring
+                              different rate limiters for the k8s client.
+                            properties:
+                              tokenBucketRateLimiter:
+                                properties:
+                                  burst:
+                                    description: Maximum burst for throttle. If it's
+                                      zero, the component default will be used
+                                    type: integer
+                                  qps:
+                                    description: QPS indicates the maximum QPS to
+                                      the apiserver from this client. If it's zero,
+                                      the component default will be used
+                                    type: number
+                                required:
+                                - burst
+                                - qps
+                                type: object
+                            type: object
+                        type: object
+                    type: object
+                  controllerConfiguration:
+                    description: ReloadableComponentConfiguration holds all generic
+                      k8s configuration options which can be reloaded by components
+                      without requiring a restart.
+                    properties:
+                      restClient:
+                        description: RestClient can be used to tune certain aspects
+                          of the k8s client in use.
+                        properties:
+                          rateLimiter:
+                            description: RateLimiter allows selecting and configuring
+                              different rate limiters for the k8s client.
+                            properties:
+                              tokenBucketRateLimiter:
+                                properties:
+                                  burst:
+                                    description: Maximum burst for throttle. If it's
+                                      zero, the component default will be used
+                                    type: integer
+                                  qps:
+                                    description: QPS indicates the maximum QPS to
+                                      the apiserver from this client. If it's zero,
+                                      the component default will be used
+                                    type: number
+                                required:
+                                - burst
+                                - qps
+                                type: object
+                            type: object
+                        type: object
+                    type: object
                   cpuModel:
                     type: string
                   cpuRequest:
@@ -2067,18 +2266,62 @@ spec:
                       pvcTolerateLessSpaceUpToPercent:
                         type: integer
                       useEmulation:
+                        description: UseEmulation can be set to true to allow fallback
+                          to software emulation in case hardware-assisted emulation
+                          is not available.
                         type: boolean
                     type: object
                   emulatedMachines:
                     items:
                       type: string
                     type: array
+                  handlerConfiguration:
+                    description: ReloadableComponentConfiguration holds all generic
+                      k8s configuration options which can be reloaded by components
+                      without requiring a restart.
+                    properties:
+                      restClient:
+                        description: RestClient can be used to tune certain aspects
+                          of the k8s client in use.
+                        properties:
+                          rateLimiter:
+                            description: RateLimiter allows selecting and configuring
+                              different rate limiters for the k8s client.
+                            properties:
+                              tokenBucketRateLimiter:
+                                properties:
+                                  burst:
+                                    description: Maximum burst for throttle. If it's
+                                      zero, the component default will be used
+                                    type: integer
+                                  qps:
+                                    description: QPS indicates the maximum QPS to
+                                      the apiserver from this client. If it's zero,
+                                      the component default will be used
+                                    type: number
+                                required:
+                                - burst
+                                - qps
+                                type: object
+                            type: object
+                        type: object
+                    type: object
                   imagePullPolicy:
                     description: PullPolicy describes a policy for if/when to pull
                       a container image
                     type: string
                   machineType:
                     type: string
+                  mediatedDevicesConfiguration:
+                    description: MediatedDevicesConfiguration holds inforamtion about
+                      MDEV types to be defined, if available
+                    properties:
+                      mediatedDevicesTypes:
+                        items:
+                          type: string
+                        type: array
+                        x-kubernetes-list-type: atomic
+                    type: object
                   memBalloonStatsPeriod:
                     format: int32
                     type: integer
@@ -2163,8 +2406,8 @@ spec:
                                 and monitoring to an external device plugin
                               type: boolean
                             pciVendorSelector:
-                              description: The vendor_id:product_id tupple of the
-                                PCI device
+                              description: The vendor_id:product_id tuple of the PCI
+                                device
                               type: string
                             resourceName:
                               description: The name of the resource that is representing
@@ -2203,6 +2446,37 @@ spec:
                     type: array
                   virtualMachineInstancesPerNode:
                     type: integer
+                  webhookConfiguration:
+                    description: ReloadableComponentConfiguration holds all generic
+                      k8s configuration options which can be reloaded by components
+                      without requiring a restart.
+                    properties:
+                      restClient:
+                        description: RestClient can be used to tune certain aspects
+                          of the k8s client in use.
+                        properties:
+                          rateLimiter:
+                            description: RateLimiter allows selecting and configuring
+                              different rate limiters for the k8s client.
+                            properties:
+                              tokenBucketRateLimiter:
+                                properties:
+                                  burst:
+                                    description: Maximum burst for throttle. If it's
+                                      zero, the component default will be used
+                                    type: integer
+                                  qps:
+                                    description: QPS indicates the maximum QPS to
+                                      the apiserver from this client. If it's zero,
+                                      the component default will be used
+                                    type: number
+                                required:
+                                - burst
+                                - qps
+                                type: object
+                            type: object
+                        type: object
+                    type: object
                 type: object
               customizeComponents:
                 properties:
@@ -3972,6 +4246,16 @@ rules:
 - apiGroups:
   - apps
   resources:
+  - controllerrevisions
+  verbs:
+  - watch
+  - list
+  - create
+  - delete
+  - patch
+- apiGroups:
+  - apps
+  resources:
   - deployments
   - daemonsets
   verbs:
@@ -4085,6 +4369,18 @@ rules:
   - virtualmachines/restart
   verbs:
   - put
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - virtualmachineinstances/pause
+  - virtualmachineinstances/unpause
+  - virtualmachineinstances/addvolume
+  - virtualmachineinstances/removevolume
+  - virtualmachineinstances/freeze
+  - virtualmachineinstances/unfreeze
+  verbs:
+  - update
+  - get
 - apiGroups:
   - ""
   resources:
@@ -4254,6 +4550,15 @@ rules:
   verbs:
   - list
 - apiGroups:
+  - apps
+  resources:
+  - controllerrevisions
+  verbs:
+  - watch
+  - list
+  - create
+  - delete
+- apiGroups:
   - ""
   resources:
   - persistentvolumeclaims
@@ -4285,7 +4590,6 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   verbs:
-  - get
   - update
 - apiGroups:
   - cdi.kubevirt.io
@@ -4353,12 +4657,6 @@ rules:
 - apiGroups:
   - ""
   resources:
-  - persistentvolumeclaims
-  verbs:
-  - get
-- apiGroups:
-  - ""
-  resources:
   - nodes
   verbs:
   - patch
@@ -4416,6 +4714,9 @@ rules:
   resources:
   - virtualmachineinstances/console
   - virtualmachineinstances/vnc
+  - virtualmachineinstances/guestosinfo
+  - virtualmachineinstances/filesystemlist
+  - virtualmachineinstances/userlist
   verbs:
   - get
 - apiGroups:
@@ -4425,8 +4726,9 @@ rules:
   - virtualmachineinstances/unpause
   - virtualmachineinstances/addvolume
   - virtualmachineinstances/removevolume
+  - virtualmachineinstances/freeze
+  - virtualmachineinstances/unfreeze
   verbs:
-  - get
   - update
 - apiGroups:
   - subresources.kubevirt.io
@@ -4473,6 +4775,9 @@ rules:
   resources:
   - virtualmachineinstances/console
   - virtualmachineinstances/vnc
+  - virtualmachineinstances/guestosinfo
+  - virtualmachineinstances/filesystemlist
+  - virtualmachineinstances/userlist
   verbs:
   - get
 - apiGroups:
@@ -4482,8 +4787,9 @@ rules:
   - virtualmachineinstances/unpause
   - virtualmachineinstances/addvolume
   - virtualmachineinstances/removevolume
+  - virtualmachineinstances/freeze
+  - virtualmachineinstances/unfreeze
   verbs:
-  - get
   - update
 - apiGroups:
   - subresources.kubevirt.io
@@ -4530,6 +4836,14 @@ rules:
   verbs:
   - get
   - list
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - virtualmachineinstances/guestosinfo
+  - virtualmachineinstances/filesystemlist
+  - virtualmachineinstances/userlist
+  verbs:
+  - get
 - apiGroups:
   - kubevirt.io
   resources:
@@ -4625,12 +4939,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.44.1
+          value: quay.io/kubevirt/virt-operator:v0.45.0-rc.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.44.1
+        image: quay.io/kubevirt/virt-operator:v0.45.0-rc.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

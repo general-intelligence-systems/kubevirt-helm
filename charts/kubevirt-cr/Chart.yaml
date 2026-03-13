@@ -2,5 +2,5 @@ apiVersion: v2
 name: kubevirt-cr
 description: KubeVirt kubevirt-cr manifests
 type: application
-version: 0.41.2
-appVersion: "0.41.2"
+version: 0.44.0-rc.0
+appVersion: "0.44.0-rc.0"

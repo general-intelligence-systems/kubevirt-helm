@@ -170,6 +170,7 @@ rules:
   - configmaps
   verbs:
   - patch
+  - delete
 - apiGroups:
   - batch
   resources:
@@ -483,17 +484,6 @@ rules:
   - nodes
   verbs:
   - patch
-  - list
-  - watch
-  - get
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  verbs:
-  - get
-  - list
-  - watch
 - apiGroups:
   - ""
   resources:
@@ -676,22 +666,22 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: index.docker.io/kubevirt/virt-operator@sha256:08659e8856de1df248b62f18ebce52ef7e9caf077b859ef528202748952d3c5b
+          value: index.docker.io/kubevirt/virt-operator@sha256:870c7fa0ceec783b0639b9e430611f5e418f93520d3d2f7f6a487290da1fada8
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.29.0
+          value: v0.29.2
         - name: VIRT_API_SHASUM
-          value: sha256:72b23de3b611269332a42c8939d9842470ed95c0587b743e8593f85cfa71d056
+          value: sha256:7ecb3319dab50ec8385ba1587b5deada13449d5148c1cf39a8b988818b3b6b44
         - name: VIRT_CONTROLLER_SHASUM
-          value: sha256:a5efad6a25cfc979d07a36ccfedab7202438106bf794e216f4c7f062001fab3d
+          value: sha256:6b4c9f9281b410230f8f124ce28a7d4ec7020dd93200320b83a3b859bbc03780
         - name: VIRT_HANDLER_SHASUM
-          value: sha256:62b026488b6084211fd993a1f76e7fd93fa20f201c20b89bda85808bc7460848
+          value: sha256:e5d23ebe0750dad1ea90438f8dcd491391dd477031fc90971bc599fb530672ff
         - name: VIRT_LAUNCHER_SHASUM
-          value: sha256:ee6cad8e8d425689d610b73d6f25d8cea3b1af71a776b82513ed96ec8581d198
-        image: index.docker.io/kubevirt/virt-operator@sha256:08659e8856de1df248b62f18ebce52ef7e9caf077b859ef528202748952d3c5b
+          value: sha256:e5708693dc8d78a6d46a0e8195ebe13f15d364c51e8ddd4f76ceb99c04d08827
+        image: index.docker.io/kubevirt/virt-operator@sha256:870c7fa0ceec783b0639b9e430611f5e418f93520d3d2f7f6a487290da1fada8
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

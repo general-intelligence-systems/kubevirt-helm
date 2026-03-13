@@ -328,6 +328,7 @@ rules:
   - list
   - watch
   - patch
+  - update
 - apiGroups:
   - kubevirt.io
   resources:
@@ -378,6 +379,15 @@ rules:
   - kubevirt.io
   resources:
   - kubevirts
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - snapshot.kubevirt.io
+  resources:
+  - virtualmachinesnapshots
+  - virtualmachinerestores
   verbs:
   - get
   - list
@@ -446,6 +456,10 @@ rules:
   - get
   - list
   - watch
+  - create
+  - update
+  - delete
+  - patch
 - apiGroups:
   - snapshot.kubevirt.io
   resources:
@@ -576,10 +590,16 @@ rules:
   resources:
   - virtualmachineinstances/console
   - virtualmachineinstances/vnc
+  verbs:
+  - get
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
   - virtualmachineinstances/pause
   - virtualmachineinstances/unpause
   verbs:
   - get
+  - update
 - apiGroups:
   - subresources.kubevirt.io
   resources:
@@ -606,14 +626,35 @@ rules:
   - watch
   - deletecollection
 - apiGroups:
+  - snapshot.kubevirt.io
+  resources:
+  - virtualmachinesnapshots
+  - virtualmachinesnapshotcontents
+  - virtualmachinerestores
+  verbs:
+  - get
+  - delete
+  - create
+  - update
+  - patch
+  - list
+  - watch
+  - deletecollection
+- apiGroups:
   - subresources.kubevirt.io
   resources:
   - virtualmachineinstances/console
   - virtualmachineinstances/vnc
+  verbs:
+  - get
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
   - virtualmachineinstances/pause
   - virtualmachineinstances/unpause
   verbs:
   - get
+  - update
 - apiGroups:
   - subresources.kubevirt.io
   resources:
@@ -639,6 +680,20 @@ rules:
   - list
   - watch
 - apiGroups:
+  - snapshot.kubevirt.io
+  resources:
+  - virtualmachinesnapshots
+  - virtualmachinesnapshotcontents
+  - virtualmachinerestores
+  verbs:
+  - get
+  - delete
+  - create
+  - update
+  - patch
+  - list
+  - watch
+- apiGroups:
   - kubevirt.io
   resources:
   - virtualmachines
@@ -646,6 +701,16 @@ rules:
   - virtualmachineinstancepresets
   - virtualmachineinstancereplicasets
   - virtualmachineinstancemigrations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - snapshot.kubevirt.io
+  resources:
+  - virtualmachinesnapshots
+  - virtualmachinesnapshotcontents
+  - virtualmachinerestores
   verbs:
   - get
   - list
@@ -723,22 +788,22 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: index.docker.io/kubevirt/virt-operator@sha256:288cc081df8d81487db08db3c60b95b372718c118a8bc61eb8a06e7c81ee8ac0
+          value: index.docker.io/kubevirt/virt-operator@sha256:8ae3d769b8fe2cc0d9c92d94b0e5c9f6c6fe3cbe6be82e5c930576cd45cbf877
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.33.0
+          value: v0.34.0-rc.0
         - name: VIRT_API_SHASUM
-          value: sha256:d4e93b98111f3ee5a52bc8408dfff7ce928dcf49e2f01f587f42e261d5f40270
+          value: sha256:17831829aa4ee49350f619bdd98d9c7f5d04c7cc43dc93ffa484fd6e26ee3eef
         - name: VIRT_CONTROLLER_SHASUM
-          value: sha256:d2be804f60f503dbe6864c37ccd3b57064dbe981dd3929f335ce87c2dc2e6b32
+          value: sha256:085d61f77d8bdceea171279fd2821e58959d8840cf053c5843655455450dd9eb
         - name: VIRT_HANDLER_SHASUM
-          value: sha256:65da881f84ea254b2342a6ac659950364c74274af518a47e7d4a723efcce98a9
+          value: sha256:a22eb33df4eb151a55d2fae73e335d6f6f7c146c7b758144efb15d37d65c2b22
         - name: VIRT_LAUNCHER_SHASUM
-          value: sha256:c82e420fb4220c1f945a51dbf459813e86301784f71eb8cd797faf23e9dca295
-        image: index.docker.io/kubevirt/virt-operator@sha256:288cc081df8d81487db08db3c60b95b372718c118a8bc61eb8a06e7c81ee8ac0
+          value: sha256:9ac34444fa8aa08a70a3ccc2009766473bdd5ae706f75dddb36513d63f2eacb2
+        image: index.docker.io/kubevirt/virt-operator@sha256:8ae3d769b8fe2cc0d9c92d94b0e5c9f6c6fe3cbe6be82e5c930576cd45cbf877
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kubevirt-cr
+description: KubeVirt kubevirt-cr manifests
+type: application
+version: 1.2.0
+appVersion: "1.2.0"

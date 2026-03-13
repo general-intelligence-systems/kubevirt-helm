@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kubevirtoperator.v1.2.0.clusterserviceversion
+description: KubeVirt kubevirtoperator.v1.2.0.clusterserviceversion manifests
+type: application
+version: 1.2.0
+appVersion: "1.2.0"

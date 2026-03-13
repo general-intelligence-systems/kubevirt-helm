@@ -1,0 +1,6 @@
+apiVersion: v2
+name: uploadproxy-nodeport
+description: KubeVirt uploadproxy-nodeport manifests
+type: application
+version: 1.2.0
+appVersion: "1.2.0"

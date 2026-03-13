@@ -47,9 +47,9 @@ helm uninstall kubevirt-operator
 | `kubevirt-operator` | KubeVirt operator deployment and CRDs |
 | `kubevirt-cr` | KubeVirt custom resource (triggers the operator to deploy KubeVirt) |
 
-## How it works
+## Implementation
 
-These charts are the Helm-packaged equivalent of the [KubeVirt quickstart](https://kubevirt.io/quickstart_cloud/):
+Basically the charts are the equivalent of doing the following steps from the [quickstart guide](https://kubevirt.io/quickstart_cloud/). There are no helm values to apply.
 
 ```bash
 export VERSION=$(curl -s https://storage.googleapis.com/kubevirt-prow/release/kubevirt/kubevirt/stable.txt)

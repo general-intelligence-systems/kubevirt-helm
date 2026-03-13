@@ -296,6 +296,10 @@ spec:
                   developerConfiguration:
                     description: DeveloperConfiguration holds developer options
                     properties:
+                      clusterProfiler:
+                        description: Enable the ability to pprof profile KubeVirt
+                          control plane
+                        type: boolean
                       cpuAllocationRatio:
                         description: |-
                           For each requested virtual CPU, CPUAllocationRatio defines how much physical CPU to request per VMI
@@ -3560,6 +3564,10 @@ spec:
                   developerConfiguration:
                     description: DeveloperConfiguration holds developer options
                     properties:
+                      clusterProfiler:
+                        description: Enable the ability to pprof profile KubeVirt
+                          control plane
+                        type: boolean
                       cpuAllocationRatio:
                         description: |-
                           For each requested virtual CPU, CPUAllocationRatio defines how much physical CPU to request per VMI
@@ -7930,14 +7938,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.5.0
+          value: quay.io/kubevirt/virt-operator:v1.6.0-alpha.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.5.0
-        image: quay.io/kubevirt/virt-operator:v1.5.0
+          value: v1.6.0-alpha.0
+        image: quay.io/kubevirt/virt-operator:v1.6.0-alpha.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

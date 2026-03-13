@@ -551,25 +551,6 @@ spec:
                             type: object
                         type: object
                     type: object
-                  hypervisors:
-                    description: Hypervisors holds information regarding the hypervisor
-                      configurations supported on this cluster.
-                    items:
-                      description: HypervisorConfiguration holds information regarding
-                        the hypervisor present on cluster nodes.
-                      properties:
-                        name:
-                          description: |-
-                            Name is the name of the hypervisor.
-                            Supported values are: "kvm", "hyperv-direct".
-                          enum:
-                          - kvm
-                          - hyperv-direct
-                          type: string
-                      type: object
-                    maxItems: 1
-                    type: array
-                    x-kubernetes-list-type: atomic
                   imagePullPolicy:
                     description: PullPolicy describes a policy for if/when to pull
                       a container image
@@ -681,12 +662,6 @@ spec:
                     description: MediatedDevicesConfiguration holds information about
                       MDEV types to be defined, if available
                     properties:
-                      enabled:
-                        description: |-
-                          Enable the creation and removal of mediated devices by virt-handler
-                          Replaces the deprecated DisableMDEVConfiguration feature gate
-                          Defaults to true
-                        type: boolean
                       mediatedDeviceTypes:
                         items:
                           type: string
@@ -819,16 +794,8 @@ spec:
                           UnsafeMigrationOverride allows live migrations to occur even if the compatibility check
                           indicates the migration will be unsafe to the guest. Defaults to false
                         type: boolean
-                      utilityVolumesTimeout:
-                        description: |-
-                          UtilityVolumesTimeout is the maximum number of seconds a migration can wait in Pending state
-                          for utility volumes to be detached. If utility volumes are still present after this timeout,
-                          the migration will be marked as Failed. Defaults to 150
-                        format: int64
-                        type: integer
                     type: object
                   minCPUModel:
-                    description: deprecated
                     type: string
                   network:
                     description: NetworkConfiguration holds network options
@@ -1846,8 +1813,8 @@ spec:
                                   most preferred is the one with the greatest sum of weights, i.e.
                                   for each node that meets all of the scheduling requirements (resource
                                   request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                  compute a sum by iterating through the elements of this field and subtracting
-                                  "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                  compute a sum by iterating through the elements of this field and adding
+                                  "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                   node(s) with the highest sum are the most preferred.
                                 items:
                                   description: The weights of all of the matched WeightedPodAffinityTerm
@@ -2919,8 +2886,8 @@ spec:
                                   most preferred is the one with the greatest sum of weights, i.e.
                                   for each node that meets all of the scheduling requirements (resource
                                   request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                  compute a sum by iterating through the elements of this field and subtracting
-                                  "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                  compute a sum by iterating through the elements of this field and adding
+                                  "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                   node(s) with the highest sum are the most preferred.
                                 items:
                                   description: The weights of all of the matched WeightedPodAffinityTerm
@@ -3964,25 +3931,6 @@ spec:
                             type: object
                         type: object
                     type: object
-                  hypervisors:
-                    description: Hypervisors holds information regarding the hypervisor
-                      configurations supported on this cluster.
-                    items:
-                      description: HypervisorConfiguration holds information regarding
-                        the hypervisor present on cluster nodes.
-                      properties:
-                        name:
-                          description: |-
-                            Name is the name of the hypervisor.
-                            Supported values are: "kvm", "hyperv-direct".
-                          enum:
-                          - kvm
-                          - hyperv-direct
-                          type: string
-                      type: object
-                    maxItems: 1
-                    type: array
-                    x-kubernetes-list-type: atomic
                   imagePullPolicy:
                     description: PullPolicy describes a policy for if/when to pull
                       a container image
@@ -4094,12 +4042,6 @@ spec:
                     description: MediatedDevicesConfiguration holds information about
                       MDEV types to be defined, if available
                     properties:
-                      enabled:
-                        description: |-
-                          Enable the creation and removal of mediated devices by virt-handler
-                          Replaces the deprecated DisableMDEVConfiguration feature gate
-                          Defaults to true
-                        type: boolean
                       mediatedDeviceTypes:
                         items:
                           type: string
@@ -4232,16 +4174,8 @@ spec:
                           UnsafeMigrationOverride allows live migrations to occur even if the compatibility check
                           indicates the migration will be unsafe to the guest. Defaults to false
                         type: boolean
-                      utilityVolumesTimeout:
-                        description: |-
-                          UtilityVolumesTimeout is the maximum number of seconds a migration can wait in Pending state
-                          for utility volumes to be detached. If utility volumes are still present after this timeout,
-                          the migration will be marked as Failed. Defaults to 150
-                        format: int64
-                        type: integer
                     type: object
                   minCPUModel:
-                    description: deprecated
                     type: string
                   network:
                     description: NetworkConfiguration holds network options
@@ -5259,8 +5193,8 @@ spec:
                                   most preferred is the one with the greatest sum of weights, i.e.
                                   for each node that meets all of the scheduling requirements (resource
                                   request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                  compute a sum by iterating through the elements of this field and subtracting
-                                  "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                  compute a sum by iterating through the elements of this field and adding
+                                  "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                   node(s) with the highest sum are the most preferred.
                                 items:
                                   description: The weights of all of the matched WeightedPodAffinityTerm
@@ -6332,8 +6266,8 @@ spec:
                                   most preferred is the one with the greatest sum of weights, i.e.
                                   for each node that meets all of the scheduling requirements (resource
                                   request, requiredDuringScheduling anti-affinity expressions, etc.),
-                                  compute a sum by iterating through the elements of this field and subtracting
-                                  "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
+                                  compute a sum by iterating through the elements of this field and adding
+                                  "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
                                   node(s) with the highest sum are the most preferred.
                                 items:
                                   description: The weights of all of the matched WeightedPodAffinityTerm
@@ -7333,22 +7267,6 @@ rules:
   - list
   - watch
 - apiGroups:
-  - backup.kubevirt.io
-  resources:
-  - virtualmachinebackups
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - backup.kubevirt.io
-  resources:
-  - virtualmachinebackuptrackers
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
   - cdi.kubevirt.io
   resources:
   - datasources
@@ -7538,33 +7456,6 @@ rules:
   - delete
   - patch
 - apiGroups:
-  - backup.kubevirt.io
-  resources:
-  - virtualmachinebackups
-  - virtualmachinebackups/status
-  - virtualmachinebackups/finalizers
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - delete
-  - patch
-- apiGroups:
-  - backup.kubevirt.io
-  resources:
-  - virtualmachinebackuptrackers
-  - virtualmachinebackuptrackers/status
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - delete
-  - patch
-- apiGroups:
   - pool.kubevirt.io
   resources:
   - virtualmachinepools
@@ -7598,7 +7489,6 @@ rules:
   - virtualmachines/stop
   - virtualmachineinstances/addvolume
   - virtualmachineinstances/removevolume
-  - virtualmachineinstances/backup
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/reset
@@ -7950,20 +7840,6 @@ rules:
   - watch
   - deletecollection
 - apiGroups:
-  - backup.kubevirt.io
-  resources:
-  - virtualmachinebackups
-  - virtualmachinebackuptrackers
-  verbs:
-  - get
-  - delete
-  - create
-  - update
-  - patch
-  - list
-  - watch
-  - deletecollection
-- apiGroups:
   - export.kubevirt.io
   resources:
   - virtualmachineexports
@@ -8122,19 +7998,6 @@ rules:
   - list
   - watch
 - apiGroups:
-  - backup.kubevirt.io
-  resources:
-  - virtualmachinebackups
-  - virtualmachinebackuptrackers
-  verbs:
-  - get
-  - delete
-  - create
-  - update
-  - patch
-  - list
-  - watch
-- apiGroups:
   - export.kubevirt.io
   resources:
   - virtualmachineexports
@@ -8244,15 +8107,6 @@ rules:
   - virtualmachinesnapshots
   - virtualmachinesnapshotcontents
   - virtualmachinerestores
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - backup.kubevirt.io
-  resources:
-  - virtualmachinebackups
-  - virtualmachinebackuptrackers
   verbs:
   - get
   - list
@@ -8419,14 +8273,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.8.0-beta.0
+          value: quay.io/kubevirt/virt-operator:v1.7.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.8.0-beta.0
-        image: quay.io/kubevirt/virt-operator:v1.8.0-beta.0
+          value: v1.7.1
+        image: quay.io/kubevirt/virt-operator:v1.7.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:

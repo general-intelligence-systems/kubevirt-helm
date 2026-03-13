@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DEST=".packages"
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+mkdir -p "$DEST"
+
+git stash --quiet 2>/dev/null || true
+trap 'git checkout "$CURRENT_BRANCH" --quiet; git stash pop --quiet 2>/dev/null || true' EXIT
+
+if [[ -n "${1:-}" ]]; then
+  tag="$1"
+  [[ "$tag" != v* ]] && tag="v${tag}"
+  tags="$tag"
+else
+  tags=$(git tag -l | sort -V)
+fi
+
+for tag in $tags; do
+  version="${tag#v}"
+  git checkout "$tag" --quiet
+
+  for chart in charts/*/; do
+    [[ -f "${chart}Chart.yaml" ]] || continue
+    helm package "$chart" --destination "$DEST" > /dev/null
+  done
+
+  echo "  packaged ${version}"
+done
+
+git checkout "$CURRENT_BRANCH" --quiet
+echo "Done: packages in ${DEST}/"

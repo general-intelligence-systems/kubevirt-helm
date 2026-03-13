@@ -1,6 +1,7 @@
 # kubevirt-helm
 
 This helm repo is automatically generated from the github releases page of the kubevirt git repo.
+All charts starting form v0.12.0 are included.
 
 ## Implementation
 

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PACKAGES=".packages"
+
+for tag in $(git tag -l | sort -V); do
+  version="${tag#v}"
+
+  if gh release view "$tag" > /dev/null 2>&1; then
+    echo "skip: ${tag} (release exists)"
+    continue
+  fi
+
+  files=()
+  for f in "${PACKAGES}/kubevirt-operator-${version}.tgz" "${PACKAGES}/kubevirt-cr-${version}.tgz"; do
+    [[ -f "$f" ]] && files+=("$f")
+  done
+
+  if [[ ${#files[@]} -eq 0 ]]; then
+    echo "skip: ${tag} (no packages)"
+    continue
+  fi
+
+  echo "creating: ${tag}"
+  gh release create "$tag" "${files[@]}" --title "$tag" --notes "KubeVirt ${tag} Helm charts"
+done

@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEST=".packages"
+TMPDIR=$(mktemp -d)
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-mkdir -p "$DEST"
 
 git stash --quiet 2>/dev/null || true
 trap 'git checkout "$CURRENT_BRANCH" --quiet; git stash pop --quiet 2>/dev/null || true' EXIT
@@ -16,17 +15,31 @@ else
   tags=$(git tag -l | sort -V)
 fi
 
+# package each tag
 for tag in $tags; do
   version="${tag#v}"
   git checkout "$tag" --quiet
 
   for chart in charts/*/; do
     [[ -f "${chart}Chart.yaml" ]] || continue
-    helm package "$chart" --destination "$DEST" > /dev/null
+    helm package "$chart" --destination "$TMPDIR" > /dev/null
   done
 
   echo "  packaged ${version}"
 done
 
+# go back to generate index from the packages
 git checkout "$CURRENT_BRANCH" --quiet
-echo "Done: packages in ${DEST}/"
+bin/generate-index "$TMPDIR"
+
+# switch to gh-pages and copy everything in
+git checkout gh-pages --quiet
+cp "$TMPDIR"/*.tgz .
+cp index.yaml .
+git add *.tgz index.yaml
+git commit -m "chore: publish helm chart packages and index"
+
+echo "Done: gh-pages updated"
+
+# cleanup
+rm -rf "$TMPDIR"

@@ -108,7 +108,7 @@ spec:
       serviceAccountName: kubevirt-operator
       containers:
         - name: virt-operator
-          image: &image docker.io/kubevirt/virt-operator:v0.13.3
+          image: &image docker.io/kubevirt/virt-operator:v0.14.0
           imagePullPolicy: IfNotPresent
           command:
             - virt-operator

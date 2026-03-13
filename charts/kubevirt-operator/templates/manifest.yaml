@@ -105,6 +105,8 @@ spec:
                     - type: string
                     pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                     x-kubernetes-int-or-string: true
+                  defaultRuntimeClass:
+                    type: string
                   developerConfiguration:
                     description: DeveloperConfiguration holds developer options
                     properties:
@@ -2000,6 +2002,8 @@ spec:
                     - type: string
                     pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                     x-kubernetes-int-or-string: true
+                  defaultRuntimeClass:
+                    type: string
                   developerConfiguration:
                     description: DeveloperConfiguration holds developer options
                     properties:
@@ -4170,6 +4174,14 @@ rules:
   - list
   - watch
 - apiGroups:
+  - cdi.kubevirt.io
+  resources:
+  - datasources
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - ""
   resources:
   - configmaps
@@ -4607,12 +4619,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.43.1-rc.2
+          value: quay.io/kubevirt/virt-operator:v0.43.1-rc.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.43.1-rc.2
+        image: quay.io/kubevirt/virt-operator:v0.43.1-rc.1
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

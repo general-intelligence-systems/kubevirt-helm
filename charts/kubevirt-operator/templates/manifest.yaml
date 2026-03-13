@@ -5329,6 +5329,23 @@ rules:
   - watch
   - patch
   - delete
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - patch
+  - delete
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes/custom-host
+  verbs:
+  - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -5525,6 +5542,7 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
+  - virtualmachineinstances/portforward
   verbs:
   - update
   - get
@@ -5557,6 +5575,12 @@ rules:
   - watch
   - patch
   - update
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  verbs:
+  - get
 - apiGroups:
   - kubevirt.io
   resources:
@@ -5633,7 +5657,10 @@ rules:
   resources:
   - virtualmachineflavors
   - virtualmachineclusterflavors
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
   verbs:
+  - get
   - list
   - watch
 - apiGroups:
@@ -5644,6 +5671,14 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - apps
+  resources:
+  - controllerrevisions
+  verbs:
+  - create
+  - list
+  - get
 - apiGroups:
   - ""
   resources:
@@ -5669,6 +5704,7 @@ rules:
   - pods
   - configmaps
   - endpoints
+  - services
   verbs:
   - get
   - list
@@ -5684,6 +5720,12 @@ rules:
   - update
   - create
   - patch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
 - apiGroups:
   - ""
   resources:
@@ -5727,6 +5769,7 @@ rules:
   - list
   - create
   - delete
+  - get
 - apiGroups:
   - ""
   resources:
@@ -5741,6 +5784,12 @@ rules:
   - patch
 - apiGroups:
   - snapshot.kubevirt.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - export.kubevirt.io
   resources:
   - '*'
   verbs:
@@ -5834,7 +5883,10 @@ rules:
   resources:
   - virtualmachineflavors
   - virtualmachineclusterflavors
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
   verbs:
+  - get
   - list
   - watch
 - apiGroups:
@@ -5845,6 +5897,28 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - clone.kubevirt.io
+  resources:
+  - virtualmachineclones
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - clone.kubevirt.io
+  resources:
+  - virtualmachineclones/status
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
 - apiGroups:
   - ""
   resources:
@@ -5916,6 +5990,24 @@ rules:
   - list
   - watch
 - apiGroups:
+  - export.kubevirt.io
+  resources:
+  - virtualmachineexports
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resourceNames:
+  - kubevirt-export-ca
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - subresources.kubevirt.io
   resources:
   - version
@@ -5943,6 +6035,7 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
+  - virtualmachineinstances/portforward
   verbs:
   - update
 - apiGroups:
@@ -5954,6 +6047,7 @@ rules:
   - virtualmachines/addvolume
   - virtualmachines/removevolume
   - virtualmachines/migrate
+  - virtualmachines/memorydump
   verbs:
   - update
 - apiGroups:
@@ -5993,6 +6087,8 @@ rules:
   resources:
   - virtualmachineflavors
   - virtualmachineclusterflavors
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
   verbs:
   - get
   - delete
@@ -6043,6 +6139,7 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
+  - virtualmachineinstances/portforward
   verbs:
   - update
 - apiGroups:
@@ -6054,6 +6151,7 @@ rules:
   - virtualmachines/addvolume
   - virtualmachines/removevolume
   - virtualmachines/migrate
+  - virtualmachines/memorydump
   verbs:
   - update
 - apiGroups:
@@ -6091,6 +6189,8 @@ rules:
   resources:
   - virtualmachineflavors
   - virtualmachineclusterflavors
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
   verbs:
   - get
   - delete
@@ -6161,6 +6261,8 @@ rules:
   resources:
   - virtualmachineflavors
   - virtualmachineclusterflavors
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
   verbs:
   - get
   - list
@@ -6254,12 +6356,12 @@ spec:
         - virt-operator
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.53.2
+          value: quay.io/kubevirt/virt-operator:v0.55.0-rc.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.53.2
+        image: quay.io/kubevirt/virt-operator:v0.55.0-rc.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

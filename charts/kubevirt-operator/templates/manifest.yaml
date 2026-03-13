@@ -241,17 +241,8 @@ rules:
   resources:
   - virtualmachines
   - virtualmachineinstances
-  verbs:
-  - get
-  - list
-  - watch
-  - patch
-- apiGroups:
-  - kubevirt.io
-  resources:
   - virtualmachineinstancemigrations
   verbs:
-  - create
   - get
   - list
   - watch
@@ -588,22 +579,22 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: index.docker.io/kubevirt/virt-operator@sha256:b463b0badd1e0c7936ae580fcd1b847786a5d20105888d26b4f46659beeb926f
+          value: index.docker.io/kubevirt/virt-operator@sha256:0f744ac55626ae6a6c55a51e39f43c088fa238adf4c482353a82e83ac185a388
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.21.0
+          value: v0.20.6
         - name: VIRT_API_SHASUM
-          value: sha256:4adb7146b61743524544dc53666769ab04fcaee085a160a24b963d2703cec8ba
+          value: sha256:4bc7dcede85d02e9300359ed184b2eb1e7f2edd7f4bc001783866c8b82f876ba
         - name: VIRT_CONTROLLER_SHASUM
-          value: sha256:d90ea146e0049ac503bef421b0c89a293d3e90f8da266ad6c6f2030f4110244e
+          value: sha256:2da93d3706c1a93d243bfcd7d99ba6938710bd867c57d0f691a6c21337ff8d4c
         - name: VIRT_HANDLER_SHASUM
-          value: sha256:74463ee0d468203d7319099650d8590bbbb8af4ab67315f7a27b205a2885e8c2
+          value: sha256:a8f9cc811e06f72a267ea6df5159df0272b28b52b1d2ffb6ee193d3d832d42be
         - name: VIRT_LAUNCHER_SHASUM
-          value: sha256:17c6d0bbedf9e24085011c96e002569444133b331f124d0177a77d45cb3ac5e4
-        image: index.docker.io/kubevirt/virt-operator@sha256:b463b0badd1e0c7936ae580fcd1b847786a5d20105888d26b4f46659beeb926f
+          value: sha256:8ce225fbb34b6c78c67570aafb87aeb7d2a9b1ff41d6a13bfc6863f9c8991860
+        image: index.docker.io/kubevirt/virt-operator@sha256:0f744ac55626ae6a6c55a51e39f43c088fa238adf4c482353a82e83ac185a388
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

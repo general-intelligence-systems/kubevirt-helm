@@ -989,9 +989,8 @@ spec:
                     nullable: true
                     type: string
                   vmStateStorageClass:
-                    description: |-
-                      VMStateStorageClass is the name of the storage class to use for the PVCs created to preserve VM state, like TPM.
-                      The storage class must support RWX in filesystem mode.
+                    description: VMStateStorageClass is the name of the storage class
+                      to use for the PVCs created to preserve VM state, like TPM.
                     type: string
                   webhookConfiguration:
                     description: |-
@@ -4254,9 +4253,8 @@ spec:
                     nullable: true
                     type: string
                   vmStateStorageClass:
-                    description: |-
-                      VMStateStorageClass is the name of the storage class to use for the PVCs created to preserve VM state, like TPM.
-                      The storage class must support RWX in filesystem mode.
+                    description: VMStateStorageClass is the name of the storage class
+                      to use for the PVCs created to preserve VM state, like TPM.
                     type: string
                   webhookConfiguration:
                     description: |-
@@ -7334,6 +7332,14 @@ rules:
   - list
   - watch
 - apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - create
+  - get
+  - delete
+- apiGroups:
   - kubevirt.io
   resources:
   - virtualmachineinstances
@@ -7924,14 +7930,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.5.0-rc.0
+          value: quay.io/kubevirt/virt-operator:v1.5.0-rc.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.5.0-rc.0
-        image: quay.io/kubevirt/virt-operator:v1.5.0-rc.0
+          value: v1.5.0-rc.1
+        image: quay.io/kubevirt/virt-operator:v1.5.0-rc.1
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

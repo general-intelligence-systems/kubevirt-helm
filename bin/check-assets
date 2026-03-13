@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+RELEASES_FILE="data/releases.yaml"
+
+if [[ ! -f "$RELEASES_FILE" ]]; then
+  echo "Error: ${RELEASES_FILE} not found. Run bin/fetch-releases first." >&2
+  exit 1
+fi
+
+yq -o=json '.[]' "$RELEASES_FILE" | jq -cs '.[] | {
+  tag: .tag,
+  has_operator: ([.assets[] | select(.name == "kubevirt-operator.yaml")] | length > 0),
+  has_cr: ([.assets[] | select(.name == "kubevirt-cr.yaml")] | length > 0)
+}' | jq -rs '.[] | "\(.tag)\toperator=\(.has_operator)\tcr=\(.has_cr)"'

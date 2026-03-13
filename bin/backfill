@@ -31,5 +31,5 @@ for version in $VERSIONS; do
   fi
 
   echo "building: ${version}"
-  bin/build-charts "$version"
+  bin/build-charts "$version" || echo "skip: ${version} (no assets)"
 done

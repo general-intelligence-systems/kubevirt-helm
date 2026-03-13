@@ -27,7 +27,12 @@ rm -rf charts
 mkdir -p charts
 
 # iterate over yaml assets only
-ASSETS=$(echo "$RELEASE" | jq -c '.assets[] | select(.name | endswith(".yaml"))')
+ASSETS=$(echo "$RELEASE" | jq -c '.assets[] | select(.name == "kubevirt-operator.yaml" or .name == "kubevirt-cr.yaml")')
+
+if [[ -z "$ASSETS" ]]; then
+  echo "Error: no operator/cr assets found for ${VERSION}" >&2
+  exit 1
+fi
 
 while IFS= read -r asset; do
   name=$(echo "$asset" | jq -r '.name')

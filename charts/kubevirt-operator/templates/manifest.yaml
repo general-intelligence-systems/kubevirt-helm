@@ -1119,6 +1119,11 @@ spec:
                     resource:
                       description: resource is the resource type of the thing you're tracking
                       type: string
+                  required:
+                  - group
+                  - lastGeneration
+                  - name
+                  - resource
                   type: object
                 type: array
                 x-kubernetes-list-type: atomic
@@ -2247,6 +2252,11 @@ spec:
                     resource:
                       description: resource is the resource type of the thing you're tracking
                       type: string
+                  required:
+                  - group
+                  - lastGeneration
+                  - name
+                  - resource
                   type: object
                 type: array
                 x-kubernetes-list-type: atomic
@@ -3073,12 +3083,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.41.0-rc.0
+          value: quay.io/kubevirt/virt-operator:v0.41.0-rc.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.41.0-rc.0
+        image: quay.io/kubevirt/virt-operator:v0.41.0-rc.1
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

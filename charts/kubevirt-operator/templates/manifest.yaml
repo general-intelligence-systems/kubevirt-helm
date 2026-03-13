@@ -22,6 +22,8 @@ spec:
     type: string
   group: kubevirt.io
   names:
+    categories:
+    - all
     kind: KubeVirt
     plural: kubevirts
     shortNames:
@@ -391,6 +393,7 @@ rules:
   - virtualmachines/restart
   verbs:
   - update
+  - put
 - apiGroups:
   - kubevirt.io
   resources:
@@ -423,6 +426,7 @@ rules:
   - virtualmachines/restart
   verbs:
   - update
+  - put
 - apiGroups:
   - kubevirt.io
   resources:
@@ -513,12 +517,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: index.docker.io/kubevirt/virt-operator:v0.17.4
+          value: index.docker.io/kubevirt/virt-operator:v0.19.0-rc.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: index.docker.io/kubevirt/virt-operator:v0.17.4
+        image: index.docker.io/kubevirt/virt-operator:v0.19.0-rc.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

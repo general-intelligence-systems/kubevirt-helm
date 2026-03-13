@@ -85,6 +85,7 @@ rules:
   resources:
   - serviceaccounts
   - services
+  - endpoints
   verbs:
   - get
   - list
@@ -164,6 +165,16 @@ rules:
   - admissionregistration.k8s.io
   resources:
   - validatingwebhookconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - delete
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - validatingwebhookconfigurations
   - mutatingwebhookconfigurations
   verbs:
   - get
@@ -200,7 +211,7 @@ rules:
   - get
   - list
   - watch
-  - delete
+  - patch
 - apiGroups:
   - kubevirt.io
   resources:
@@ -468,11 +479,12 @@ metadata:
   name: virt-operator
   namespace: kubevirt
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       kubevirt.io: virt-operator
-  strategy: {}
+  strategy:
+    type: RollingUpdate
   template:
     metadata:
       annotations:
@@ -492,12 +504,12 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: index.docker.io/kubevirt/virt-operator:v0.16.2
+          value: index.docker.io/kubevirt/virt-operator:v0.17.0-alpha.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: index.docker.io/kubevirt/virt-operator:v0.16.2
+        image: index.docker.io/kubevirt/virt-operator:v0.17.0-alpha.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

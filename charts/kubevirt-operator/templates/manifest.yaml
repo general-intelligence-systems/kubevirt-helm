@@ -632,6 +632,13 @@ spec:
                       binding:
                         additionalProperties:
                           properties:
+                            domainAttachmentType:
+                              description: 'DomainAttachmentType is a standard domain
+                                network attachment method kubevirt supports. Supported
+                                values: "tap". The standard domain attachment can
+                                be used instead or in addition to the sidecarImage.
+                                version: 1alphav1'
+                              type: string
                             networkAttachmentDefinition:
                               description: 'NetworkAttachmentDefinition references
                                 to a NetworkAttachmentDefinition CR object. Format:
@@ -3700,6 +3707,13 @@ spec:
                       binding:
                         additionalProperties:
                           properties:
+                            domainAttachmentType:
+                              description: 'DomainAttachmentType is a standard domain
+                                network attachment method kubevirt supports. Supported
+                                values: "tap". The standard domain attachment can
+                                be used instead or in addition to the sidecarImage.
+                                version: 1alphav1'
+                              type: string
                             networkAttachmentDefinition:
                               description: 'NetworkAttachmentDefinition references
                                 to a NetworkAttachmentDefinition CR object. Format:
@@ -7284,6 +7298,13 @@ rules:
   - list
   - watch
 - apiGroups:
+  - kubevirt.io
+  resources:
+  - kubevirts
+  verbs:
+  - get
+  - list
+- apiGroups:
   - subresources.kubevirt.io
   resources:
   - virtualmachines/expand-spec
@@ -7447,14 +7468,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.1.0
+          value: quay.io/kubevirt/virt-operator:v1.1.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.1.0
-        image: quay.io/kubevirt/virt-operator:v1.1.0
+          value: v1.1.1
+        image: quay.io/kubevirt/virt-operator:v1.1.1
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

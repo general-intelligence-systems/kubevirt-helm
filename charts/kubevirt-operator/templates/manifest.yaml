@@ -512,6 +512,25 @@ spec:
                         type: array
                         x-kubernetes-list-type: atomic
                     type: object
+                  seccompConfiguration:
+                    description: SeccompConfiguration holds Seccomp configuration
+                      for Kubevirt components
+                    properties:
+                      virtualMachineInstanceProfile:
+                        description: VirtualMachineInstanceProfile defines what profile
+                          should be used with virt-launcher. Defaults to none
+                        properties:
+                          customProfile:
+                            description: CustomProfile allows to request arbitrary
+                              profile for virt-launcher
+                            properties:
+                              localhostProfile:
+                                type: string
+                              runtimeDefaultProfile:
+                                type: boolean
+                            type: object
+                        type: object
+                    type: object
                   selinuxLauncherType:
                     type: string
                   smbios:
@@ -632,6 +651,20 @@ spec:
               imagePullPolicy:
                 description: The ImagePullPolicy to use.
                 type: string
+              imagePullSecrets:
+                description: The imagePullSecrets to pull the container images from
+                  Defaults to none
+                items:
+                  description: LocalObjectReference contains enough information to
+                    let you locate the referenced object inside the same namespace.
+                  properties:
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        TODO: Add other useful fields. apiVersion, kind, uid?'
+                      type: string
+                  type: object
+                type: array
+                x-kubernetes-list-type: atomic
               imageRegistry:
                 description: The image registry to pull the container images from
                   Defaults to the same registry the operator's container image is
@@ -3241,6 +3274,25 @@ spec:
                         type: array
                         x-kubernetes-list-type: atomic
                     type: object
+                  seccompConfiguration:
+                    description: SeccompConfiguration holds Seccomp configuration
+                      for Kubevirt components
+                    properties:
+                      virtualMachineInstanceProfile:
+                        description: VirtualMachineInstanceProfile defines what profile
+                          should be used with virt-launcher. Defaults to none
+                        properties:
+                          customProfile:
+                            description: CustomProfile allows to request arbitrary
+                              profile for virt-launcher
+                            properties:
+                              localhostProfile:
+                                type: string
+                              runtimeDefaultProfile:
+                                type: boolean
+                            type: object
+                        type: object
+                    type: object
                   selinuxLauncherType:
                     type: string
                   smbios:
@@ -3361,6 +3413,20 @@ spec:
               imagePullPolicy:
                 description: The ImagePullPolicy to use.
                 type: string
+              imagePullSecrets:
+                description: The imagePullSecrets to pull the container images from
+                  Defaults to none
+                items:
+                  description: LocalObjectReference contains enough information to
+                    let you locate the referenced object inside the same namespace.
+                  properties:
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        TODO: Add other useful fields. apiVersion, kind, uid?'
+                      type: string
+                  type: object
+                type: array
+                x-kubernetes-list-type: atomic
               imageRegistry:
                 description: The image registry to pull the container images from
                   Defaults to the same registry the operator's container image is
@@ -5867,6 +5933,7 @@ rules:
   resources:
   - virtualmachinesnapshots
   - virtualmachinerestores
+  - virtualmachinesnapshotcontents
   verbs:
   - get
   - list
@@ -5875,6 +5942,7 @@ rules:
   - cdi.kubevirt.io
   resources:
   - datasources
+  - datavolumes
   verbs:
   - get
   - list
@@ -6037,6 +6105,8 @@ rules:
   resources:
   - virtualmachinepools
   - virtualmachinepools/finalizers
+  - virtualmachinepools/status
+  - virtualmachinepools/scale
   verbs:
   - watch
   - list
@@ -6717,14 +6787,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.58.2
+          value: quay.io/kubevirt/virt-operator:v0.59.1
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.58.2
-        image: quay.io/kubevirt/virt-operator:v0.58.2
+          value: v0.59.1
+        image: quay.io/kubevirt/virt-operator:v0.59.1
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

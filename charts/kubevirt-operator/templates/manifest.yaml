@@ -239,6 +239,12 @@ spec:
                     items:
                       type: string
                     type: array
+                  evictionStrategy:
+                    description: EvictionStrategy defines at the cluster level if
+                      the VirtualMachineInstance should be migrated instead of shut-off
+                      in case of a node drain. If the VirtualMachineInstance specific
+                      field is set it overrides the cluster level one.
+                    type: string
                   handlerConfiguration:
                     description: ReloadableComponentConfiguration holds all generic
                       k8s configuration options which can be reloaded by components
@@ -277,7 +283,7 @@ spec:
                   machineType:
                     type: string
                   mediatedDevicesConfiguration:
-                    description: MediatedDevicesConfiguration holds inforamtion about
+                    description: MediatedDevicesConfiguration holds information about
                       MDEV types to be defined, if available
                     properties:
                       mediatedDevicesTypes:
@@ -287,7 +293,7 @@ spec:
                         x-kubernetes-list-type: atomic
                       nodeMediatedDeviceTypes:
                         items:
-                          description: NodeMediatedDeviceTypesConfig holds inforamtion
+                          description: NodeMediatedDeviceTypesConfig holds information
                             about MDEV types to be defined in a specifc node that
                             matches the NodeSelector field.
                           properties:
@@ -367,7 +373,7 @@ spec:
                   ovmfPath:
                     type: string
                   permittedHostDevices:
-                    description: PermittedHostDevices holds inforamtion about devices
+                    description: PermittedHostDevices holds information about devices
                       allowed for passthrough
                     properties:
                       mediatedDevices:
@@ -844,9 +850,9 @@ spec:
                                             null selector and null or empty namespaces
                                             list means "this pod's namespace". An
                                             empty selector ({}) matches all namespaces.
-                                            This field is alpha-level and is only
-                                            honored when PodAffinityNamespaceSelector
-                                            feature is enabled.
+                                            This field is beta-level and is only honored
+                                            when PodAffinityNamespaceSelector feature
+                                            is enabled.
                                           properties:
                                             matchExpressions:
                                               description: matchExpressions is a list
@@ -1016,7 +1022,7 @@ spec:
                                         field. null selector and null or empty namespaces
                                         list means "this pod's namespace". An empty
                                         selector ({}) matches all namespaces. This
-                                        field is alpha-level and is only honored when
+                                        field is beta-level and is only honored when
                                         PodAffinityNamespaceSelector feature is enabled.
                                       properties:
                                         matchExpressions:
@@ -1185,9 +1191,9 @@ spec:
                                             null selector and null or empty namespaces
                                             list means "this pod's namespace". An
                                             empty selector ({}) matches all namespaces.
-                                            This field is alpha-level and is only
-                                            honored when PodAffinityNamespaceSelector
-                                            feature is enabled.
+                                            This field is beta-level and is only honored
+                                            when PodAffinityNamespaceSelector feature
+                                            is enabled.
                                           properties:
                                             matchExpressions:
                                               description: matchExpressions is a list
@@ -1357,7 +1363,7 @@ spec:
                                         field. null selector and null or empty namespaces
                                         list means "this pod's namespace". An empty
                                         selector ({}) matches all namespaces. This
-                                        field is alpha-level and is only honored when
+                                        field is beta-level and is only honored when
                                         PodAffinityNamespaceSelector feature is enabled.
                                       properties:
                                         matchExpressions:
@@ -1491,9 +1497,11 @@ spec:
                         type: array
                     type: object
                   replicas:
-                    description: replicas indicates how many replicas should be created
+                    description: 'replicas indicates how many replicas should be created
                       for each KubeVirt infrastructure component (like virt-api or
-                      virt-controller). Defaults to 2.
+                      virt-controller). Defaults to 2. WARNING: this is an advanced
+                      feature that prevents auto-scaling for core kubevirt components.
+                      Please use with caution!'
                     type: integer
                 type: object
               monitorAccount:
@@ -1518,6 +1526,11 @@ spec:
                 description: Designate the apps.kubevirt.io/version label for KubeVirt
                   components. Useful if KubeVirt is included as part of a product.
                   If ProductVersion is not specified, KubeVirt's version will be used.
+                type: string
+              serviceMonitorNamespace:
+                description: The namespace the service monitor will be deployed  When
+                  ServiceMonitorNamespace is set, then we'll install the service monitor
+                  object in that namespace otherwise we will use the monitoring namespace.
                 type: string
               uninstallStrategy:
                 description: Specifies if kubevirt can be deleted if workloads are
@@ -1873,9 +1886,9 @@ spec:
                                             null selector and null or empty namespaces
                                             list means "this pod's namespace". An
                                             empty selector ({}) matches all namespaces.
-                                            This field is alpha-level and is only
-                                            honored when PodAffinityNamespaceSelector
-                                            feature is enabled.
+                                            This field is beta-level and is only honored
+                                            when PodAffinityNamespaceSelector feature
+                                            is enabled.
                                           properties:
                                             matchExpressions:
                                               description: matchExpressions is a list
@@ -2045,7 +2058,7 @@ spec:
                                         field. null selector and null or empty namespaces
                                         list means "this pod's namespace". An empty
                                         selector ({}) matches all namespaces. This
-                                        field is alpha-level and is only honored when
+                                        field is beta-level and is only honored when
                                         PodAffinityNamespaceSelector feature is enabled.
                                       properties:
                                         matchExpressions:
@@ -2214,9 +2227,9 @@ spec:
                                             null selector and null or empty namespaces
                                             list means "this pod's namespace". An
                                             empty selector ({}) matches all namespaces.
-                                            This field is alpha-level and is only
-                                            honored when PodAffinityNamespaceSelector
-                                            feature is enabled.
+                                            This field is beta-level and is only honored
+                                            when PodAffinityNamespaceSelector feature
+                                            is enabled.
                                           properties:
                                             matchExpressions:
                                               description: matchExpressions is a list
@@ -2386,7 +2399,7 @@ spec:
                                         field. null selector and null or empty namespaces
                                         list means "this pod's namespace". An empty
                                         selector ({}) matches all namespaces. This
-                                        field is alpha-level and is only honored when
+                                        field is beta-level and is only honored when
                                         PodAffinityNamespaceSelector feature is enabled.
                                       properties:
                                         matchExpressions:
@@ -2520,9 +2533,11 @@ spec:
                         type: array
                     type: object
                   replicas:
-                    description: replicas indicates how many replicas should be created
+                    description: 'replicas indicates how many replicas should be created
                       for each KubeVirt infrastructure component (like virt-api or
-                      virt-controller). Defaults to 2.
+                      virt-controller). Defaults to 2. WARNING: this is an advanced
+                      feature that prevents auto-scaling for core kubevirt components.
+                      Please use with caution!'
                     type: integer
                 type: object
             type: object
@@ -2596,6 +2611,9 @@ spec:
                 type: string
               observedDeploymentID:
                 type: string
+              observedGeneration:
+                format: int64
+                type: integer
               observedKubeVirtRegistry:
                 type: string
               observedKubeVirtVersion:
@@ -2838,6 +2856,12 @@ spec:
                     items:
                       type: string
                     type: array
+                  evictionStrategy:
+                    description: EvictionStrategy defines at the cluster level if
+                      the VirtualMachineInstance should be migrated instead of shut-off
+                      in case of a node drain. If the VirtualMachineInstance specific
+                      field is set it overrides the cluster level one.
+                    type: string
                   handlerConfiguration:
                     description: ReloadableComponentConfiguration holds all generic
                       k8s configuration options which can be reloaded by components
@@ -2876,7 +2900,7 @@ spec:
                   machineType:
                     type: string
                   mediatedDevicesConfiguration:
-                    description: MediatedDevicesConfiguration holds inforamtion about
+                    description: MediatedDevicesConfiguration holds information about
                       MDEV types to be defined, if available
                     properties:
                       mediatedDevicesTypes:
@@ -2886,7 +2910,7 @@ spec:
                         x-kubernetes-list-type: atomic
                       nodeMediatedDeviceTypes:
                         items:
-                          description: NodeMediatedDeviceTypesConfig holds inforamtion
+                          description: NodeMediatedDeviceTypesConfig holds information
                             about MDEV types to be defined in a specifc node that
                             matches the NodeSelector field.
                           properties:
@@ -2966,7 +2990,7 @@ spec:
                   ovmfPath:
                     type: string
                   permittedHostDevices:
-                    description: PermittedHostDevices holds inforamtion about devices
+                    description: PermittedHostDevices holds information about devices
                       allowed for passthrough
                     properties:
                       mediatedDevices:
@@ -3443,9 +3467,9 @@ spec:
                                             null selector and null or empty namespaces
                                             list means "this pod's namespace". An
                                             empty selector ({}) matches all namespaces.
-                                            This field is alpha-level and is only
-                                            honored when PodAffinityNamespaceSelector
-                                            feature is enabled.
+                                            This field is beta-level and is only honored
+                                            when PodAffinityNamespaceSelector feature
+                                            is enabled.
                                           properties:
                                             matchExpressions:
                                               description: matchExpressions is a list
@@ -3615,7 +3639,7 @@ spec:
                                         field. null selector and null or empty namespaces
                                         list means "this pod's namespace". An empty
                                         selector ({}) matches all namespaces. This
-                                        field is alpha-level and is only honored when
+                                        field is beta-level and is only honored when
                                         PodAffinityNamespaceSelector feature is enabled.
                                       properties:
                                         matchExpressions:
@@ -3784,9 +3808,9 @@ spec:
                                             null selector and null or empty namespaces
                                             list means "this pod's namespace". An
                                             empty selector ({}) matches all namespaces.
-                                            This field is alpha-level and is only
-                                            honored when PodAffinityNamespaceSelector
-                                            feature is enabled.
+                                            This field is beta-level and is only honored
+                                            when PodAffinityNamespaceSelector feature
+                                            is enabled.
                                           properties:
                                             matchExpressions:
                                               description: matchExpressions is a list
@@ -3956,7 +3980,7 @@ spec:
                                         field. null selector and null or empty namespaces
                                         list means "this pod's namespace". An empty
                                         selector ({}) matches all namespaces. This
-                                        field is alpha-level and is only honored when
+                                        field is beta-level and is only honored when
                                         PodAffinityNamespaceSelector feature is enabled.
                                       properties:
                                         matchExpressions:
@@ -4090,9 +4114,11 @@ spec:
                         type: array
                     type: object
                   replicas:
-                    description: replicas indicates how many replicas should be created
+                    description: 'replicas indicates how many replicas should be created
                       for each KubeVirt infrastructure component (like virt-api or
-                      virt-controller). Defaults to 2.
+                      virt-controller). Defaults to 2. WARNING: this is an advanced
+                      feature that prevents auto-scaling for core kubevirt components.
+                      Please use with caution!'
                     type: integer
                 type: object
               monitorAccount:
@@ -4117,6 +4143,11 @@ spec:
                 description: Designate the apps.kubevirt.io/version label for KubeVirt
                   components. Useful if KubeVirt is included as part of a product.
                   If ProductVersion is not specified, KubeVirt's version will be used.
+                type: string
+              serviceMonitorNamespace:
+                description: The namespace the service monitor will be deployed  When
+                  ServiceMonitorNamespace is set, then we'll install the service monitor
+                  object in that namespace otherwise we will use the monitoring namespace.
                 type: string
               uninstallStrategy:
                 description: Specifies if kubevirt can be deleted if workloads are
@@ -4472,9 +4503,9 @@ spec:
                                             null selector and null or empty namespaces
                                             list means "this pod's namespace". An
                                             empty selector ({}) matches all namespaces.
-                                            This field is alpha-level and is only
-                                            honored when PodAffinityNamespaceSelector
-                                            feature is enabled.
+                                            This field is beta-level and is only honored
+                                            when PodAffinityNamespaceSelector feature
+                                            is enabled.
                                           properties:
                                             matchExpressions:
                                               description: matchExpressions is a list
@@ -4644,7 +4675,7 @@ spec:
                                         field. null selector and null or empty namespaces
                                         list means "this pod's namespace". An empty
                                         selector ({}) matches all namespaces. This
-                                        field is alpha-level and is only honored when
+                                        field is beta-level and is only honored when
                                         PodAffinityNamespaceSelector feature is enabled.
                                       properties:
                                         matchExpressions:
@@ -4813,9 +4844,9 @@ spec:
                                             null selector and null or empty namespaces
                                             list means "this pod's namespace". An
                                             empty selector ({}) matches all namespaces.
-                                            This field is alpha-level and is only
-                                            honored when PodAffinityNamespaceSelector
-                                            feature is enabled.
+                                            This field is beta-level and is only honored
+                                            when PodAffinityNamespaceSelector feature
+                                            is enabled.
                                           properties:
                                             matchExpressions:
                                               description: matchExpressions is a list
@@ -4985,7 +5016,7 @@ spec:
                                         field. null selector and null or empty namespaces
                                         list means "this pod's namespace". An empty
                                         selector ({}) matches all namespaces. This
-                                        field is alpha-level and is only honored when
+                                        field is beta-level and is only honored when
                                         PodAffinityNamespaceSelector feature is enabled.
                                       properties:
                                         matchExpressions:
@@ -5119,9 +5150,11 @@ spec:
                         type: array
                     type: object
                   replicas:
-                    description: replicas indicates how many replicas should be created
+                    description: 'replicas indicates how many replicas should be created
                       for each KubeVirt infrastructure component (like virt-api or
-                      virt-controller). Defaults to 2.
+                      virt-controller). Defaults to 2. WARNING: this is an advanced
+                      feature that prevents auto-scaling for core kubevirt components.
+                      Please use with caution!'
                     type: integer
                 type: object
             type: object
@@ -5195,6 +5228,9 @@ spec:
                 type: string
               observedDeploymentID:
                 type: string
+              observedGeneration:
+                format: int64
+                type: integer
               observedKubeVirtRegistry:
                 type: string
               observedKubeVirtVersion:
@@ -5293,6 +5329,23 @@ rules:
   - watch
   - patch
   - delete
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - patch
+  - delete
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes/custom-host
+  verbs:
+  - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -5480,19 +5533,6 @@ rules:
   - update
   - patch
 - apiGroups:
-  - subresources.kubevirt.io
-  resources:
-  - virtualmachineinstances/pause
-  - virtualmachineinstances/unpause
-  - virtualmachineinstances/addvolume
-  - virtualmachineinstances/removevolume
-  - virtualmachineinstances/freeze
-  - virtualmachineinstances/unfreeze
-  - virtualmachineinstances/softreboot
-  verbs:
-  - update
-  - get
-- apiGroups:
   - ""
   resources:
   - namespaces
@@ -5501,6 +5541,22 @@ rules:
   - list
   - watch
   - patch
+- apiGroups:
+  - flavor.kubevirt.io
+  resources:
+  - virtualmachineflavors
+  - virtualmachineclusterflavors
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
+  verbs:
+  - get
+  - delete
+  - create
+  - update
+  - patch
+  - list
+  - watch
+  - deletecollection
 - apiGroups:
   - ""
   resources:
@@ -5521,6 +5577,12 @@ rules:
   - watch
   - patch
   - update
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  verbs:
+  - get
 - apiGroups:
   - kubevirt.io
   resources:
@@ -5593,11 +5655,14 @@ rules:
   - list
   - watch
 - apiGroups:
-  - flavor.kubevirt.io
+  - instancetype.kubevirt.io
   resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
   verbs:
+  - get
   - list
   - watch
 - apiGroups:
@@ -5608,6 +5673,14 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - apps
+  resources:
+  - controllerrevisions
+  verbs:
+  - create
+  - list
+  - get
 - apiGroups:
   - ""
   resources:
@@ -5633,6 +5706,7 @@ rules:
   - pods
   - configmaps
   - endpoints
+  - services
   verbs:
   - get
   - list
@@ -5648,6 +5722,12 @@ rules:
   - update
   - create
   - patch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
 - apiGroups:
   - ""
   resources:
@@ -5691,6 +5771,7 @@ rules:
   - list
   - create
   - delete
+  - get
 - apiGroups:
   - ""
   resources:
@@ -5705,6 +5786,12 @@ rules:
   - patch
 - apiGroups:
   - snapshot.kubevirt.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - export.kubevirt.io
   resources:
   - '*'
   verbs:
@@ -5794,11 +5881,14 @@ rules:
   - list
   - watch
 - apiGroups:
-  - flavor.kubevirt.io
+  - instancetype.kubevirt.io
   resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
   verbs:
+  - get
   - list
   - watch
 - apiGroups:
@@ -5810,11 +5900,48 @@ rules:
   - list
   - watch
 - apiGroups:
+  - clone.kubevirt.io
+  resources:
+  - virtualmachineclones
+  - virtualmachineclones/status
+  - virtualmachineclones/finalizers
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
+- apiGroups:
   - ""
   resources:
   - namespaces
   verbs:
   - get
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes
+  verbs:
+  - list
+  - get
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - list
+  - get
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - list
+  - get
+  - watch
 - apiGroups:
   - kubevirt.io
   resources:
@@ -5880,6 +6007,24 @@ rules:
   - list
   - watch
 - apiGroups:
+  - export.kubevirt.io
+  resources:
+  - virtualmachineexports
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resourceNames:
+  - kubevirt-export-ca
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - subresources.kubevirt.io
   resources:
   - version
@@ -5907,6 +6052,7 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
+  - virtualmachineinstances/portforward
   verbs:
   - update
 - apiGroups:
@@ -5917,6 +6063,8 @@ rules:
   - virtualmachines/restart
   - virtualmachines/addvolume
   - virtualmachines/removevolume
+  - virtualmachines/migrate
+  - virtualmachines/memorydump
   verbs:
   - update
 - apiGroups:
@@ -5952,10 +6100,12 @@ rules:
   - watch
   - deletecollection
 - apiGroups:
-  - flavor.kubevirt.io
+  - instancetype.kubevirt.io
   resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
   verbs:
   - get
   - delete
@@ -6006,6 +6156,7 @@ rules:
   - virtualmachineinstances/freeze
   - virtualmachineinstances/unfreeze
   - virtualmachineinstances/softreboot
+  - virtualmachineinstances/portforward
   verbs:
   - update
 - apiGroups:
@@ -6016,6 +6167,8 @@ rules:
   - virtualmachines/restart
   - virtualmachines/addvolume
   - virtualmachines/removevolume
+  - virtualmachines/migrate
+  - virtualmachines/memorydump
   verbs:
   - update
 - apiGroups:
@@ -6049,10 +6202,12 @@ rules:
   - list
   - watch
 - apiGroups:
-  - flavor.kubevirt.io
+  - instancetype.kubevirt.io
   resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
   verbs:
   - get
   - delete
@@ -6119,10 +6274,12 @@ rules:
   - list
   - watch
 - apiGroups:
-  - flavor.kubevirt.io
+  - instancetype.kubevirt.io
   resources:
-  - virtualmachineflavors
-  - virtualmachineclusterflavors
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
   verbs:
   - get
   - list
@@ -6190,6 +6347,7 @@ spec:
     metadata:
       labels:
         kubevirt.io: virt-operator
+        name: virt-operator
         prometheus.kubevirt.io: "true"
       name: virt-operator
     spec:
@@ -6206,20 +6364,21 @@ spec:
               topologyKey: kubernetes.io/hostname
             weight: 1
       containers:
-      - command:
-        - virt-operator
+      - args:
         - --port
         - "8443"
         - -v
         - "2"
+        command:
+        - virt-operator
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v0.49.1
+          value: quay.io/kubevirt/virt-operator:v0.57.0-rc.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
-        image: quay.io/kubevirt/virt-operator:v0.49.1
+        image: quay.io/kubevirt/virt-operator:v0.57.0-rc.0
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:
@@ -6239,13 +6398,15 @@ spec:
         resources:
           requests:
             cpu: 10m
-            memory: 150Mi
+            memory: 250Mi
         volumeMounts:
         - mountPath: /etc/virt-operator/certificates
           name: kubevirt-operator-certs
           readOnly: true
         - mountPath: /profile-data
           name: profile-data
+      nodeSelector:
+        kubernetes.io/os: linux
       priorityClassName: kubevirt-cluster-critical
       securityContext:
         runAsNonRoot: true

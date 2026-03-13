@@ -170,6 +170,7 @@ rules:
   - configmaps
   verbs:
   - patch
+  - delete
 - apiGroups:
   - batch
   resources:
@@ -483,17 +484,6 @@ rules:
   - nodes
   verbs:
   - patch
-  - list
-  - watch
-  - get
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  verbs:
-  - get
-  - list
-  - watch
 - apiGroups:
   - ""
   resources:
@@ -676,22 +666,22 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: index.docker.io/kubevirt/virt-operator@sha256:10382752c5a55cc650ecd79e92f40a442af1a267356cd781322779fbdfd3ce23
+          value: index.docker.io/kubevirt/virt-operator@sha256:81050f56daacaf834d0302a49665d4ab07dbec4d6cbe970b34857f8a3ca7cda3
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.30.0-rc.1
+          value: v0.30.0-rc.2
         - name: VIRT_API_SHASUM
-          value: sha256:000e4022f719ab307954bda73a71734b74bbbf4e0508d0b5c25aa56972b098ba
+          value: sha256:6916cdc8b122472e0df4cf06f930b2ac1a159e06aa41bdcbf1f0de489a9a929b
         - name: VIRT_CONTROLLER_SHASUM
-          value: sha256:1fa940c88201618dfb956deea914b3cb40c14c49f57562ec504a49afae14e929
+          value: sha256:4ec67a856eeea13116e618508f2fa92d5a6525f2f9d85ad75956b02aa770fb7a
         - name: VIRT_HANDLER_SHASUM
-          value: sha256:e368eb153fb05218db700912405344cb1cc5926aed66bb3ef48c1c723245d229
+          value: sha256:ca8a591e3493099f4ce992c2272c9bcb7a152624c4912d9712d306fe3a09669e
         - name: VIRT_LAUNCHER_SHASUM
-          value: sha256:60cbafbd9b6704561e776dfe3e6a0ca6bc56632b2ae0b38ec0aeb8179bafd1e4
-        image: index.docker.io/kubevirt/virt-operator@sha256:10382752c5a55cc650ecd79e92f40a442af1a267356cd781322779fbdfd3ce23
+          value: sha256:2febfd8e455764ec8bb3c6ae733182c442babe2f18ad6c95e444bb51b338ee02
+        image: index.docker.io/kubevirt/virt-operator@sha256:81050f56daacaf834d0302a49665d4ab07dbec4d6cbe970b34857f8a3ca7cda3
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

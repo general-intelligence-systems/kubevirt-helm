@@ -1839,22 +1839,22 @@ spec:
         - "2"
         env:
         - name: OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator@sha256:34e131d7bde99b1b17a40f5a39b65cc603837565fff4ac41155407afa5c08d2b
+          value: quay.io/kubevirt/virt-operator@sha256:346e2b6e3ec894767061e4ddefb13c976d72fb4422d11504886b30563932055c
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v0.38.0-rc.0
+          value: v0.38.0-rc.1
         - name: VIRT_API_SHASUM
-          value: sha256:0dc225e221f6626165549d1351930735d63715e910384dc1c146eb29b5ec8650
+          value: sha256:9f76829201397f3140b0e6215a6370edbbfb2fc998fa91908147b274c5d75496
         - name: VIRT_CONTROLLER_SHASUM
-          value: sha256:3390a25ae996f5939e6c13b428fb6fe3e3e8c256594ad3d894f54cf04e2efb54
+          value: sha256:a43228f77f7e207ddb90b0cd7572c0a97453ddcf4f2bd6225330ef0171655b42
         - name: VIRT_HANDLER_SHASUM
-          value: sha256:43da289b9c5d9a9a65f68ed5a5b568321bc2a0cc776ec1a419872049fb3c4086
+          value: sha256:2c855f9150fe2ced9df2c1daffb32fd3bc47eb2a684184657df315b777bc2b7d
         - name: VIRT_LAUNCHER_SHASUM
-          value: sha256:8790d5382277ec03ec2743e854255f43e5fbe8326649ea3dbe65b338a470e9eb
-        image: quay.io/kubevirt/virt-operator@sha256:34e131d7bde99b1b17a40f5a39b65cc603837565fff4ac41155407afa5c08d2b
+          value: sha256:de80e0d8c8fb8965e587577e032ecd304baa7c3a1dfefc26f375851df8cb47a9
+        image: quay.io/kubevirt/virt-operator@sha256:346e2b6e3ec894767061e4ddefb13c976d72fb4422d11504886b30563932055c
         imagePullPolicy: IfNotPresent
         name: virt-operator
         ports:

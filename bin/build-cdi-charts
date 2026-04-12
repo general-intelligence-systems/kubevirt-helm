@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="${1:?Usage: bin/build-charts <version>}"
+VERSION="${1:?Usage: bin/build-cdi-charts <version>}"
 
-# normalize: accept both v1.7.0 and 1.7.0
+# normalize: accept both v1.65.0 and 1.65.0
 [[ "$VERSION" != v* ]] && VERSION="v${VERSION}"
 CHART_VERSION="${VERSION#v}"
 
-RELEASES_FILE="data/releases.yaml"
+RELEASES_FILE="data/cdi-releases.yaml"
 
 if [[ ! -f "$RELEASES_FILE" ]]; then
-  echo "Error: ${RELEASES_FILE} not found. Run bin/fetch-releases first." >&2
+  echo "Error: ${RELEASES_FILE} not found. Run bin/fetch-cdi-releases first." >&2
   exit 1
 fi
 
@@ -18,19 +18,19 @@ fi
 RELEASE=$(yq -o=json ".[] | select(.tag == \"${VERSION}\")" "$RELEASES_FILE")
 
 if [[ -z "$RELEASE" ]]; then
-  echo "Error: version ${VERSION} not found in ${RELEASES_FILE}" >&2
+  echo "Error: CDI version ${VERSION} not found in ${RELEASES_FILE}" >&2
   exit 1
 fi
 
-# wipe and recreate kubevirt charts only (preserve cdi-* charts)
-rm -rf charts/kubevirt-operator charts/kubevirt-cr
+# wipe and recreate cdi charts only (preserve kubevirt-* charts)
+rm -rf charts/cdi-operator charts/cdi-cr
 mkdir -p charts
 
 # iterate over yaml assets only
-ASSETS=$(echo "$RELEASE" | jq -c '.assets[] | select(.name == "kubevirt-operator.yaml" or .name == "kubevirt-cr.yaml")')
+ASSETS=$(echo "$RELEASE" | jq -c '.assets[] | select(.name == "cdi-operator.yaml" or .name == "cdi-cr.yaml")')
 
 if [[ -z "$ASSETS" ]]; then
-  echo "Error: no operator/cr assets found for ${VERSION}" >&2
+  echo "Error: no operator/cr assets found for CDI ${VERSION}" >&2
   exit 1
 fi
 
@@ -48,7 +48,7 @@ while IFS= read -r asset; do
   cat > "${chart_dir}/Chart.yaml" <<EOF
 apiVersion: v2
 name: ${chart_name}
-description: KubeVirt ${chart_name} manifests
+description: CDI ${chart_name} manifests
 type: application
 version: ${CHART_VERSION}
 appVersion: "${CHART_VERSION}"
@@ -56,8 +56,8 @@ EOF
 
 done <<< "$ASSETS"
 
-git add charts/
-git commit -m "chore: sync kubevirt ${VERSION}"
-git tag "$VERSION"
+git add charts/cdi-operator charts/cdi-cr
+git commit -m "chore: sync cdi ${VERSION}"
+git tag "cdi-${VERSION}"
 
-echo "Done: committed and tagged ${VERSION}"
+echo "Done: committed and tagged cdi-${VERSION}"

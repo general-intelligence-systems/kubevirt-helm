@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+FROM="${1:-}"
+[[ -n "$FROM" && "$FROM" != v* ]] && FROM="v${FROM}"
+
+RELEASES_FILE="data/cdi-releases.yaml"
+
+if [[ ! -f "$RELEASES_FILE" ]]; then
+  echo "Error: ${RELEASES_FILE} not found. Run bin/fetch-cdi-releases first." >&2
+  exit 1
+fi
+
+VERSIONS=$(yq -r '.[].tag' "$RELEASES_FILE" | tac)
+
+started=true
+[[ -n "$FROM" ]] && started=false
+
+for version in $VERSIONS; do
+  if [[ "$started" == false ]]; then
+    if [[ "$version" == "$FROM" ]]; then
+      started=true
+    else
+      continue
+    fi
+  fi
+
+  tag="cdi-${version}"
+  if git tag -l "$tag" | grep -q .; then
+    echo "skip: ${tag} (already tagged)"
+    continue
+  fi
+
+  echo "building: ${tag}"
+  bin/build-cdi-charts "$version" || echo "skip: ${tag} (no assets)"
+done

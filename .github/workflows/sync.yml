@@ -1,4 +1,4 @@
-name: Sync KubeVirt Releases
+name: Sync KubeVirt & CDI Releases
 
 on:
   schedule:
@@ -36,6 +36,19 @@ jobs:
 
       - name: Backfill new releases
         run: nix develop --command bin/backfill
+
+      - name: Fetch CDI releases
+        run: nix develop --command bin/fetch-cdi-releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit CDI release data
+        run: |
+          git add data/cdi-releases.yaml
+          git diff --cached --quiet || git commit -m "chore: update CDI release data"
+
+      - name: Backfill new CDI releases
+        run: nix develop --command bin/backfill-cdi
 
       - name: Push
         run: git push origin HEAD --tags

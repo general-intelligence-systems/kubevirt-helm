@@ -322,7 +322,7 @@ spec:
         - name: DOCKER_REPO
           value: kubevirt
         - name: DOCKER_TAG
-          value: v1.10.7
+          value: v1.10.9
         - name: CONTROLLER_IMAGE
           value: cdi-controller
         - name: IMPORTER_IMAGE
@@ -339,7 +339,7 @@ spec:
           value: "1"
         - name: PULL_POLICY
           value: IfNotPresent
-        image: kubevirt/cdi-operator:v1.10.7
+        image: kubevirt/cdi-operator:v1.10.9
         imagePullPolicy: IfNotPresent
         name: cdi-operator
         ports:

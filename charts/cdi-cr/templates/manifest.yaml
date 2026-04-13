@@ -3,9 +3,6 @@ kind: CDI
 metadata:
   name: cdi
 spec:
-  config:
-    featureGates:
-    - HonorWaitForFirstConsumer
   imagePullPolicy: IfNotPresent
   infra:
     nodeSelector:

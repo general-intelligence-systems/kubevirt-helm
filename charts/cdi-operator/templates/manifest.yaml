@@ -47,27 +47,6 @@ metadata:
   namespace: cdi
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: cdi.kubevirt.io:operator
-  labels:
-    operator.cdi.kubevirt.io: ""
-    rbac.authorization.k8s.io/aggregate-to-admin: "true"
-rules:
-- apiGroups:
-  - cdi.kubevirt.io
-  resources:
-  - cdis
-  verbs:
-  - create
-  - patch
-  - get
-  - list
-  - delete
-  - watch
-  - deletecollection
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -203,6 +182,7 @@ rules:
   - patch
 - apiGroups:
   - cdi.kubevirt.io
+  - upload.cdi.kubevirt.io
   resources:
   - '*'
   verbs:
@@ -342,7 +322,7 @@ spec:
         - name: DOCKER_REPO
           value: kubevirt
         - name: DOCKER_TAG
-          value: v1.10.5
+          value: v1.10.6
         - name: CONTROLLER_IMAGE
           value: cdi-controller
         - name: IMPORTER_IMAGE
@@ -359,7 +339,7 @@ spec:
           value: "1"
         - name: PULL_POLICY
           value: IfNotPresent
-        image: kubevirt/cdi-operator:v1.10.5
+        image: kubevirt/cdi-operator:v1.10.6
         imagePullPolicy: IfNotPresent
         name: cdi-operator
         ports:

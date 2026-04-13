@@ -2,5 +2,5 @@ apiVersion: v2
 name: cdi-cr
 description: CDI cdi-cr manifests
 type: application
-version: 1.34.2
-appVersion: "1.34.2"
+version: 1.37.1
+appVersion: "1.37.1"

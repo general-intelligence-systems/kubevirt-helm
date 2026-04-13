@@ -80,7 +80,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    cdi.kubevirt.io: ""
+    operator.cdi.kubevirt.io: ""
   name: cdi-operator-cluster
 rules:
 - apiGroups:
@@ -100,14 +100,6 @@ rules:
   - get
   - list
   - watch
-- apiGroups:
-  - security.openshift.io
-  resourceNames:
-  - anyuid
-  resources:
-  - securitycontextconstraints
-  verbs:
-  - get
   - patch
   - update
 - apiGroups:
@@ -180,6 +172,7 @@ rules:
   - apps
   resources:
   - deployments
+  - deployments/finalizers
   - daemonstes
   verbs:
   - create
@@ -312,7 +305,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
-    cdi.kubevirt.io: ""
+    operator.cdi.kubevirt.io: ""
   name: cdi-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -349,7 +342,7 @@ spec:
         - name: DOCKER_REPO
           value: kubevirt
         - name: DOCKER_TAG
-          value: v1.10.2
+          value: v1.10.3
         - name: CONTROLLER_IMAGE
           value: cdi-controller
         - name: IMPORTER_IMAGE
@@ -366,7 +359,7 @@ spec:
           value: "1"
         - name: PULL_POLICY
           value: IfNotPresent
-        image: kubevirt/cdi-operator:v1.10.2
+        image: kubevirt/cdi-operator:v1.10.3
         imagePullPolicy: IfNotPresent
         name: cdi-operator
         ports:

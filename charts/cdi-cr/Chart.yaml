@@ -1,6 +1,6 @@
 apiVersion: v2
-name: cdi-operator
-description: CDI cdi-operator manifests
+name: cdi-cr
+description: CDI cdi-cr manifests
 type: application
 version: 1.66.0
 appVersion: "1.66.0"

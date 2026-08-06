@@ -1,3 +1,16 @@
+- tag: v1.66.0
+  prerelease: false
+  draft: false
+  published_at: "2026-08-05T19:21:22Z"
+  assets:
+    - name: cdi-cr.yaml
+      url: https://github.com/kubevirt/containerized-data-importer/releases/download/v1.66.0/cdi-cr.yaml
+    - name: cdi-operator.yaml
+      url: https://github.com/kubevirt/containerized-data-importer/releases/download/v1.66.0/cdi-operator.yaml
+    - name: network-policies.yaml
+      url: https://github.com/kubevirt/containerized-data-importer/releases/download/v1.66.0/network-policies.yaml
+    - name: tests.test
+      url: https://github.com/kubevirt/containerized-data-importer/releases/download/v1.66.0/tests.test
 - tag: v1.65.0
   prerelease: false
   draft: false

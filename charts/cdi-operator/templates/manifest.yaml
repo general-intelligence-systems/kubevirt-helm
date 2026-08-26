@@ -312,8 +312,6 @@ subjects:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    operator.cdi.kubevirt.io: ""
   name: cdi-operator
   namespace: cdi
 spec:
@@ -321,11 +319,13 @@ spec:
   selector:
     matchLabels:
       name: cdi-operator
+      operator.cdi.kubevirt.io: ""
   strategy: {}
   template:
     metadata:
       labels:
         name: cdi-operator
+        operator.cdi.kubevirt.io: ""
     spec:
       containers:
       - env:
@@ -334,7 +334,7 @@ spec:
         - name: DOCKER_REPO
           value: kubevirt
         - name: DOCKER_TAG
-          value: v1.9.1
+          value: v1.9.2
         - name: CONTROLLER_IMAGE
           value: cdi-controller
         - name: IMPORTER_IMAGE
@@ -351,7 +351,7 @@ spec:
           value: "1"
         - name: PULL_POLICY
           value: IfNotPresent
-        image: kubevirt/cdi-operator:v1.9.1
+        image: kubevirt/cdi-operator:v1.9.2
         imagePullPolicy: IfNotPresent
         name: cdi-operator
         ports:

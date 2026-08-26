@@ -31,7 +31,7 @@ ASSETS=$(echo "$RELEASE" | jq -c '.assets[] | select(.name == "cdi-operator.yaml
 
 if [[ -z "$ASSETS" ]]; then
   echo "Error: no operator/cr assets found for CDI ${VERSION}" >&2
-  exit 1
+  exit 3
 fi
 
 while IFS= read -r asset; do

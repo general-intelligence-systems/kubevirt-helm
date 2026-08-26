@@ -32,10 +32,18 @@ for version in $VERSIONS; do
   fi
 
   echo "building: ${version}"
-  if ! bin/build-charts "$version"; then
-    echo "FAILED: ${version} (see error above)" >&2
-    failed+=("${version}")
-  fi
+  set +e
+  bin/build-charts "$version"
+  rc=$?
+  set -e
+  case $rc in
+    0) ;;
+    # exit 3 means upstream published no operator/cr assets for this
+    # release -- expected for old versions, not a failure.
+    3) echo "skip: ${version} (no upstream assets)" ;;
+    *) echo "FAILED: ${version} (exit ${rc}, see error above)" >&2
+       failed+=("${version}") ;;
+  esac
 done
 
 if [[ ${#failed[@]} -gt 0 ]]; then

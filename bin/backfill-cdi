@@ -33,10 +33,18 @@ for version in $VERSIONS; do
   fi
 
   echo "building: ${tag}"
-  if ! bin/build-cdi-charts "$version"; then
-    echo "FAILED: ${tag} (see error above)" >&2
-    failed+=("${tag}")
-  fi
+  set +e
+  bin/build-cdi-charts "$version"
+  rc=$?
+  set -e
+  case $rc in
+    0) ;;
+    # exit 3 means upstream published no operator/cr assets for this
+    # release -- expected for old versions, not a failure.
+    3) echo "skip: ${tag} (no upstream assets)" ;;
+    *) echo "FAILED: ${tag} (exit ${rc}, see error above)" >&2
+       failed+=("${tag}") ;;
+  esac
 done
 
 if [[ ${#failed[@]} -gt 0 ]]; then

@@ -5,6 +5,9 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
+# contents: write covers all three writes this job makes with the built-in
+# GITHUB_TOKEN: the release-data commits, the v*/cdi-v* tags, and the chart
+# packages + index.yaml that chart-releaser pushes to gh-pages.
 permissions:
   contents: write
 
@@ -52,3 +55,14 @@ jobs:
 
       - name: Push
         run: git push origin HEAD --tags
+
+      # Runs here rather than in release.yml because tags pushed above with the
+      # built-in GITHUB_TOKEN do not trigger workflow runs. Same run, same token.
+      - name: Release charts
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          charts_dir: charts
+          skip_existing: true
+          packages_with_index: true
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

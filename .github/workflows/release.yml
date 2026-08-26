@@ -1,11 +1,17 @@
 name: Release Charts
 
+# The nightly sync now releases charts in its own run (see sync.yml). This
+# workflow is kept for manual catch-up runs and for tags pushed by a human,
+# whose events -- unlike the sync's GITHUB_TOKEN pushes -- do trigger it.
 on:
   push:
     tags:
       - 'v*'
       - 'cdi-v*'
+  workflow_dispatch:
 
+# contents: write lets chart-releaser publish packages and index.yaml to
+# gh-pages using the built-in GITHUB_TOKEN.
 permissions:
   contents: write
 

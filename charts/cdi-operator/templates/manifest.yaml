@@ -31,7 +31,7 @@ roleRef:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "cdi-controler-leader-election"
+  name: "cdi-operator-leader-election-helper"
   namespace: cdi
   labels:
     operator.cdi.kubevirt.io: ""
@@ -56,7 +56,7 @@ spec:
       serviceAccountName: cdi-operator
       containers:
         - name: cdi-operator
-          image: kubevirt/cdi-operator:v1.5.4
+          image: kubevirt/cdi-operator:v1.6.0
           ports:
           - containerPort: 60000
             name: metrics
@@ -67,7 +67,7 @@ spec:
           - name: DOCKER_REPO
             value: kubevirt
           - name: DOCKER_TAG
-            value: v1.5.4
+            value: v1.6.0
           - name: CONTROLLER_IMAGE
             value: cdi-controller
           - name: IMPORTER_IMAGE
@@ -81,7 +81,7 @@ spec:
           - name: UPLOAD_SERVER_IMAGE
             value: cdi-uploadserver
           - name: VERBOSITY
-            value: '3'
+            value: '1'
           - name: PULL_POLICY
             value: IfNotPresent
 ---
@@ -89,6 +89,8 @@ apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: cdis.cdi.kubevirt.io
+  labels:
+    operator.cdi.kubevirt.io: ""
 spec:
   group: cdi.kubevirt.io
   names:

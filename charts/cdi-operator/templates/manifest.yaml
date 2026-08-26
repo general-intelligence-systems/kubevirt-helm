@@ -56,7 +56,7 @@ spec:
       serviceAccountName: cdi-operator
       containers:
         - name: cdi-operator
-          image: kubevirt/cdi-operator:v1.5.3
+          image: kubevirt/cdi-operator:v1.5.4
           ports:
           - containerPort: 60000
             name: metrics
@@ -67,7 +67,7 @@ spec:
           - name: DOCKER_REPO
             value: kubevirt
           - name: DOCKER_TAG
-            value: v1.5.3
+            value: v1.5.4
           - name: CONTROLLER_IMAGE
             value: cdi-controller
           - name: IMPORTER_IMAGE

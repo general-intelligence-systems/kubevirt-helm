@@ -56,7 +56,7 @@ EOF
 
 done <<< "$ASSETS"
 
-git add charts/cdi-operator charts/cdi-cr
+git add charts/
 git commit -m "chore: sync cdi ${VERSION}"
 git tag "cdi-${VERSION}"
 

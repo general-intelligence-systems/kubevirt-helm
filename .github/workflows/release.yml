@@ -5,6 +5,7 @@ on:
     tags:
       - 'v*'
       - 'cdi-v*'
+  workflow_dispatch:
 
 permissions:
   contents: write

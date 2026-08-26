@@ -1,16 +1,11 @@
 name: Release Charts
 
-# The nightly sync now releases charts in its own run (see sync.yml). This
-# workflow is kept for manual catch-up runs and for tags pushed by a human,
-# whose events -- unlike the sync's GITHUB_TOKEN pushes -- do trigger it.
+# The nightly sync publishes charts in its own run (see sync.yml). This workflow
+# is a manual re-publish for catch-up or repair.
 on:
-  push:
-    tags:
-      - 'v*'
-      - 'cdi-v*'
   workflow_dispatch:
 
-# contents: write lets chart-releaser publish packages and index.yaml to
+# contents: write lets bin/package-charts push the packages and index to
 # gh-pages using the built-in GITHUB_TOKEN.
 permissions:
   contents: write
@@ -23,16 +18,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
       - name: Configure git
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
 
-      - name: Release charts
-        uses: helm/chart-releaser-action@v1.7.0
-        with:
-          charts_dir: charts
-          skip_existing: true
-          packages_with_index: true
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Publish charts and index to gh-pages
+        run: nix develop --command bin/package-charts --push

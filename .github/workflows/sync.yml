@@ -56,28 +56,9 @@ jobs:
       - name: Push
         run: git push origin HEAD --tags
 
-      - uses: azure/setup-helm@v4
-
-      # chart-releaser's own chart discovery diffs charts/ against the latest
-      # git tag. This repo tags every sync, so at this point HEAD *is* the
-      # latest tag and that diff is always empty ("No chart changes detected").
-      # Package every chart explicitly instead and let skip_existing below make
-      # already-published versions a no-op.
-      - name: Package charts
-        run: |
-          mkdir -p .cr-release-packages
-          for chart in charts/*/; do
-            helm package "$chart" --destination .cr-release-packages
-          done
-          ls -1 .cr-release-packages
-
-      # Runs here rather than in release.yml because tags pushed above with the
-      # built-in GITHUB_TOKEN do not trigger workflow runs. Same run, same token.
-      - name: Release charts
-        uses: helm/chart-releaser-action@v1.7.0
-        with:
-          skip_packaging: true
-          skip_existing: true
-          packages_with_index: true
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      # Publishing runs here, in the same job, because the tags pushed above are
+      # pushed with the built-in GITHUB_TOKEN and GitHub does not start workflow
+      # runs from GITHUB_TOKEN push events -- which is why release.yml had not
+      # fired since 2026-04-12 and index.yaml was stuck at 1.8.0-rc.0.
+      - name: Publish charts and index to gh-pages
+        run: nix develop --command bin/package-charts --push

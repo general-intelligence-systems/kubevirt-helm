@@ -15,6 +15,7 @@ VERSIONS=$(yq -r '.[].tag' "$RELEASES_FILE" | tac)
 
 started=true
 [[ -n "$FROM" ]] && started=false
+failed=()
 
 for version in $VERSIONS; do
   if [[ "$started" == false ]]; then
@@ -32,5 +33,15 @@ for version in $VERSIONS; do
   fi
 
   echo "building: ${tag}"
-  bin/build-cdi-charts "$version" || echo "skip: ${tag} (no assets)"
+  if ! bin/build-cdi-charts "$version"; then
+    echo "FAILED: ${tag} (see error above)" >&2
+    failed+=("${tag}")
+  fi
 done
+
+if [[ ${#failed[@]} -gt 0 ]]; then
+  echo >&2
+  echo "${#failed[@]} version(s) failed to build:" >&2
+  printf '  %s\n' "${failed[@]}" >&2
+  exit 1
+fi

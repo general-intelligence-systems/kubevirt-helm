@@ -1,45 +1,74 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TMPDIR=$(mktemp -d)
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+PUSH=false
+if [[ "${1:-}" == "--push" ]]; then
+  PUSH=true
+  shift
+fi
 
-git stash --quiet 2>/dev/null || true
-trap 'git checkout "$CURRENT_BRANCH" --quiet; git stash pop --quiet 2>/dev/null || true' EXIT
+PKGDIR=$(mktemp -d)
+BUILD_WT="$(mktemp -d)"; rm -rf "$BUILD_WT"
+PAGES_WT="$(mktemp -d)"; rm -rf "$PAGES_WT"
+
+cleanup() {
+  git worktree remove --force "$BUILD_WT" 2>/dev/null || true
+  git worktree remove --force "$PAGES_WT" 2>/dev/null || true
+  rm -rf "$PKGDIR"
+}
+trap cleanup EXIT
 
 if [[ -n "${1:-}" ]]; then
   tag="$1"
-  [[ "$tag" != v* ]] && tag="v${tag}"
+  [[ "$tag" != v* && "$tag" != cdi-v* ]] && tag="v${tag}"
   tags="$tag"
 else
   tags=$(git tag -l | sort -V)
 fi
 
-# package each tag
+# Package each tag inside a detached worktree. The previous version ran
+# `git stash` + `git checkout <tag>` in the caller's tree, which left the
+# working copy on the wrong ref whenever a later step failed -- and a
+# conflicted `stash pop` from exactly that path is how the merge markers got
+# committed into bin/generate-index.
+git worktree add --detach --quiet "$BUILD_WT" HEAD
 for tag in $tags; do
-  version="${tag#v}"
-  git checkout "$tag" --quiet
-
-  for chart in charts/*/; do
+  git -C "$BUILD_WT" checkout --quiet "$tag"
+  for chart in "$BUILD_WT"/charts/*/; do
     [[ -f "${chart}Chart.yaml" ]] || continue
-    helm package "$chart" --destination "$TMPDIR" > /dev/null
+    helm package "$chart" --destination "$PKGDIR" > /dev/null
   done
-
-  echo "  packaged ${version}"
 done
+git worktree remove --force "$BUILD_WT"
 
-# go back to generate index from the packages
-git checkout "$CURRENT_BRANCH" --quiet
-bin/generate-index "$TMPDIR"
+bin/generate-index "$PKGDIR"
 
-# switch to gh-pages and copy everything in
-git checkout gh-pages --quiet
-cp "$TMPDIR"/*.tgz .
-cp index.yaml .
-git add *.tgz index.yaml
-git commit -m "chore: publish helm chart packages and index"
+# actions/checkout only guarantees the checked-out ref, so gh-pages may not be
+# present locally. Fetch it, and fall back to an orphan branch on first publish.
+if ! git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+  git fetch --quiet origin gh-pages:refs/remotes/origin/gh-pages 2>/dev/null || true
+fi
 
-echo "Done: gh-pages updated"
+if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+  git worktree add --quiet "$PAGES_WT" -B gh-pages origin/gh-pages
+else
+  echo "origin/gh-pages not found -- creating it"
+  git worktree add --quiet --detach "$PAGES_WT" HEAD
+  git -C "$PAGES_WT" checkout --quiet --orphan gh-pages
+  git -C "$PAGES_WT" rm -rqf .
+fi
+cp "$PKGDIR"/*.tgz "$PAGES_WT"/
+cp index.yaml "$PAGES_WT"/
+git -C "$PAGES_WT" add -A
 
-# cleanup
-rm -rf "$TMPDIR"
+if git -C "$PAGES_WT" diff --cached --quiet; then
+  echo "Done: gh-pages already up to date"
+else
+  git -C "$PAGES_WT" commit --quiet -m "chore: publish helm chart packages and index"
+  echo "Done: gh-pages updated"
+fi
+
+if [[ "$PUSH" == true ]]; then
+  git -C "$PAGES_WT" push --quiet origin gh-pages
+  echo "Done: pushed gh-pages"
+fi

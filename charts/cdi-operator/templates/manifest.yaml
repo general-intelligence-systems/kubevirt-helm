@@ -12,14 +12,30 @@ metadata:
     operator.cdi.kubevirt.io: ""
   name: cdis.cdi.kubevirt.io
 spec:
+  additionalPrinterColumns:
+  - JSONPath: .metadata.creationTimestamp
+    name: Age
+    type: date
+  - JSONPath: .status.phase
+    name: Phase
+    type: string
   group: cdi.kubevirt.io
   names:
+    categories:
+    - all
     kind: CDI
     listKind: CDIList
     plural: cdis
+    shortNames:
+    - cdi
+    - cdis
     singular: cdi
   scope: Cluster
   version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
 
 ---
 apiVersion: v1
@@ -65,7 +81,7 @@ kind: ClusterRole
 metadata:
   labels:
     cdi.kubevirt.io: ""
-  name: cdi-operator-cluster-role
+  name: cdi-operator-cluster
 rules:
 - apiGroups:
   - rbac.authorization.k8s.io
@@ -81,7 +97,19 @@ rules:
   resources:
   - securitycontextconstraints
   verbs:
-  - '*'
+  - get
+  - list
+  - watch
+- apiGroups:
+  - security.openshift.io
+  resourceNames:
+  - privileged
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - get
+  - patch
+  - update
 - apiGroups:
   - ""
   resources:
@@ -147,6 +175,7 @@ rules:
   - update
   - patch
   - list
+  - watch
 - apiGroups:
   - apps
   resources:
@@ -173,14 +202,24 @@ rules:
   - apiservices
   verbs:
   - get
+  - list
+  - watch
   - create
   - update
+  - patch
 - apiGroups:
   - cdi.kubevirt.io
   resources:
   - '*'
   verbs:
   - '*'
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - get
+  - list
 - apiGroups:
   - ""
   resources:
@@ -243,6 +282,16 @@ rules:
   - get
   - list
   - watch
+  - create
+  - update
+  - patch
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes/custom-host
+  verbs:
+  - create
+  - update
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -253,7 +302,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: cdi-operator-cluster-role
+  name: cdi-operator-cluster
 subjects:
 - kind: ServiceAccount
   name: cdi-operator
@@ -285,7 +334,7 @@ spec:
         - name: DOCKER_REPO
           value: kubevirt
         - name: DOCKER_TAG
-          value: v1.9.0
+          value: v1.9.1
         - name: CONTROLLER_IMAGE
           value: cdi-controller
         - name: IMPORTER_IMAGE
@@ -302,11 +351,12 @@ spec:
           value: "1"
         - name: PULL_POLICY
           value: IfNotPresent
-        image: kubevirt/cdi-operator:v1.9.0
+        image: kubevirt/cdi-operator:v1.9.1
         imagePullPolicy: IfNotPresent
         name: cdi-operator
         ports:
         - containerPort: 60000
           name: metrics
+          protocol: TCP
         resources: {}
       serviceAccountName: cdi-operator

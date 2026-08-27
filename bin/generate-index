@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-<<<<<<< Updated upstream
 PACKAGES="${1:-.packages}"
 INDEX_FILE="index.yaml"
 
@@ -10,94 +9,61 @@ if [[ ! -d "$PACKAGES" ]]; then
   exit 1
 fi
 
-# collect entries grouped by chart name
-declare -A operator_entries
-declare -A cr_entries
+shopt -s nullglob
+PKGS=("$PACKAGES"/*.tgz)
+if [[ ${#PKGS[@]} -eq 0 ]]; then
+  echo "Error: no chart packages in ${PACKAGES}." >&2
+  exit 1
+fi
 
-=======
-INDEX_FILE="index.yaml"
+# chart name is everything before the trailing -<version>; collect the set
+CHARTS=$(for tgz in "${PKGS[@]}"; do
+  base=$(basename "$tgz" .tgz)
+  echo "${base%-[0-9]*}"
+done | sort -u)
 
->>>>>>> Stashed changes
 cat > "$INDEX_FILE" <<'EOF'
 apiVersion: v1
 entries:
-  kubevirt-operator:
 EOF
 
-<<<<<<< Updated upstream
-for tgz in "$PACKAGES"/kubevirt-operator-*.tgz; do
-  [[ -f "$tgz" ]] || continue
-  filename=$(basename "$tgz")
-  version="${filename#kubevirt-operator-}"
-  version="${version%.tgz}"
-  tag="v${version}"
-  digest=$(sha256sum "$tgz" | awk '{print $1}')
-  created=$(git log -1 --format=%aI "$tag" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%SZ")
+for chart in $CHARTS; do
+  echo "  ${chart}:" >> "$INDEX_FILE"
 
-=======
-for tag in $(git tag -l | sort -V); do
-  version="${tag#v}"
-  created=$(git log -1 --format=%aI "$tag")
->>>>>>> Stashed changes
-  cat >> "$INDEX_FILE" <<EOF
-    - name: kubevirt-operator
+  versions=$(for tgz in "$PACKAGES/${chart}"-[0-9]*.tgz; do
+    base=$(basename "$tgz" .tgz)
+    echo "${base#"${chart}"-}"
+  done | sort -V)
+
+  for version in $versions; do
+    tgz="${PACKAGES}/${chart}-${version}.tgz"
+    digest=$(sha256sum "$tgz" | awk '{print $1}')
+
+    # description and appVersion come from the packaged chart itself
+    metadata=$(tar -xzOf "$tgz" "${chart}/Chart.yaml")
+    description=$(yq -r '.description' - <<< "$metadata")
+    app_version=$(yq -r '.appVersion' - <<< "$metadata")
+
+    # cdi-* charts are tagged cdi-v<version>, kubevirt-* charts v<version>
+    case "$chart" in
+      cdi-*) tag="cdi-v${version}" ;;
+      *)     tag="v${version}" ;;
+    esac
+    created=$(git log -1 --format=%aI "$tag" 2> /dev/null || date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+    cat >> "$INDEX_FILE" <<EOF
+    - name: ${chart}
       version: "${version}"
-      appVersion: "${version}"
-      description: KubeVirt kubevirt-operator manifests
-<<<<<<< Updated upstream
-      digest: "${digest}"
-=======
->>>>>>> Stashed changes
-      urls:
-        - kubevirt-operator-${version}.tgz
-      created: "${created}"
-EOF
-  echo "  kubevirt-operator @ ${version}"
-done
-
-cat >> "$INDEX_FILE" <<'EOF'
-  kubevirt-cr:
-EOF
-
-<<<<<<< Updated upstream
-for tgz in "$PACKAGES"/kubevirt-cr-*.tgz; do
-  [[ -f "$tgz" ]] || continue
-  filename=$(basename "$tgz")
-  version="${filename#kubevirt-cr-}"
-  version="${version%.tgz}"
-  tag="v${version}"
-  digest=$(sha256sum "$tgz" | awk '{print $1}')
-  created=$(git log -1 --format=%aI "$tag" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%SZ")
-
-  cat >> "$INDEX_FILE" <<EOF
-    - name: kubevirt-cr
-      version: "${version}"
-      appVersion: "${version}"
-      description: KubeVirt kubevirt-cr manifests
+      appVersion: "${app_version}"
+      description: ${description}
       digest: "${digest}"
       urls:
-        - kubevirt-cr-${version}.tgz
+        - ${chart}-${version}.tgz
       created: "${created}"
 EOF
-  echo "  kubevirt-cr @ ${version}"
+    echo "  ${chart} @ ${version}"
+  done
 done
 
-=======
-for tag in $(git tag -l | sort -V); do
-  version="${tag#v}"
-  created=$(git log -1 --format=%aI "$tag")
-  cat >> "$INDEX_FILE" <<EOF
-    - name: kubevirt-cr
-      version: "${version}"
-      appVersion: "${version}"
-      description: KubeVirt kubevirt-cr manifests
-      urls:
-        - kubevirt-cr-${version}.tgz
-      created: "${created}"
-EOF
-  echo "  kubevirt-cr @ ${version}"
-done
-
->>>>>>> Stashed changes
 echo "generated: \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"" >> "$INDEX_FILE"
 echo "Done: wrote ${INDEX_FILE}"

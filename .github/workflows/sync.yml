@@ -52,3 +52,8 @@ jobs:
 
       - name: Push
         run: git push origin HEAD --tags
+
+      - name: Create GitHub releases
+        run: nix develop --command bin/create-releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

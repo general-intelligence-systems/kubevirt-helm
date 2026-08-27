@@ -1,19 +1,51 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PACKAGES=".packages"
+# Create a GitHub release per chart tag, with the packaged charts attached.
+# Usage: bin/create-releases [tag ...]
+#   no args: every kubevirt (v*) tag without a release
+#   args:    those tags only, kubevirt or cdi (cdi-v*) — CDI ships via the
+#            gh-pages index and is not backfilled by default
 
-for tag in $(git tag -l | sort -V); do
-  version="${tag#v}"
+for cmd in gh helm; do
+  command -v "$cmd" > /dev/null || { echo "Error: ${cmd} not found" >&2; exit 1; }
+done
 
-  if gh release view "$tag" > /dev/null 2>&1; then
+TAGS=("$@")
+if [[ ${#TAGS[@]} -eq 0 ]]; then
+  mapfile -t TAGS < <(git tag -l 'v*' | sort -V)
+fi
+
+WORK=$(mktemp -d)
+EXISTING=$(mktemp)
+trap 'rm -rf "$WORK" "$EXISTING"' EXIT
+
+# one API call, rather than one `gh release view` per tag
+gh release list --limit 1000 --json tagName -q '.[].tagName' | sort > "$EXISTING"
+
+for tag in "${TAGS[@]}"; do
+  case "$tag" in
+    cdi-v*) version="${tag#cdi-v}"; project="CDI"; charts=(cdi-operator cdi-cr) ;;
+    v*)     version="${tag#v}";     project="KubeVirt"; charts=(kubevirt-operator kubevirt-cr) ;;
+    *) echo "skip: ${tag} (unrecognized tag)"; continue ;;
+  esac
+
+  if grep -qxF "$tag" "$EXISTING"; then
     echo "skip: ${tag} (release exists)"
     continue
   fi
 
+  # every tag carries both chart families in-tree, so package only this tag's own
+  dir="${WORK}/${tag}"
+  mkdir -p "$dir"
   files=()
-  for f in "${PACKAGES}/kubevirt-operator-${version}.tgz" "${PACKAGES}/kubevirt-cr-${version}.tgz"; do
-    [[ -f "$f" ]] && files+=("$f")
+  for chart in "${charts[@]}"; do
+    git archive "$tag" "charts/${chart}" 2> /dev/null | tar -x -C "$dir" 2> /dev/null || continue
+    [[ -f "${dir}/charts/${chart}/Chart.yaml" ]] || continue
+    helm package "${dir}/charts/${chart}" --destination "$dir" > /dev/null
+    for pkg in "${dir}/${chart}"-*.tgz; do
+      [[ -f "$pkg" ]] && files+=("$pkg")
+    done
   done
 
   if [[ ${#files[@]} -eq 0 ]]; then
@@ -21,6 +53,9 @@ for tag in $(git tag -l | sort -V); do
     continue
   fi
 
+  args=(--title "$tag" --notes "${project} ${version} Helm charts")
+  [[ "$version" == *-* ]] && args+=(--prerelease)
+
   echo "creating: ${tag}"
-  gh release create "$tag" "${files[@]}" --title "$tag" --notes "KubeVirt ${tag} Helm charts"
+  gh release create "$tag" "${files[@]}" "${args[@]}"
 done

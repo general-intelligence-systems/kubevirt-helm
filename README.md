@@ -83,3 +83,208 @@ kubectl create -f "https://github.com/kubevirt/containerized-data-importer/relea
 ```
 
 Each chart contains the upstream YAML manifests as-is. There are no Helm values or templating — the charts exist purely to provide Helm lifecycle management (install, upgrade, rollback, uninstall) for KubeVirt and CDI.
+
+## Flux / GitOps
+
+These charts have no values, so Flux deploys them as plain HelmReleases. Point one
+`HelmRepository` at the chart repo, and a `HelmRelease` per chart. Because the
+chart CRs ship with empty/short `featureGates`, patch them back via
+`postRenderers` (Flux's `kustomize` support) to what the cluster actually runs.
+
+### HelmRepository
+
+```yaml
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: kubevirt
+  namespace: kube-system
+spec:
+  url: https://general-intelligence-systems.github.io/kubevirt-helm
+  interval: 1h
+```
+
+### KubeVirt operator
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kubevirt-operator
+  namespace: kube-system
+spec:
+  interval: 30m
+  targetNamespace: kubevirt
+  chart:
+    spec:
+      chart: kubevirt-operator
+      version: "1.9.0"
+      sourceRef:
+        kind: HelmRepository
+        name: kubevirt
+        namespace: kube-system
+  install:
+    crds: Create
+    remediation:
+      remediateLastFailure: false
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      remediateLastFailure: false
+  driftDetection:
+    mode: enabled
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: Namespace
+          name: kubevirt
+        patch: |
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: kubevirt
+            annotations:
+              helm.sh/resource-policy: keep
+```
+
+> The `helm.sh/resource-policy: keep` annotation stops Helm deleting the
+> namespace if a future uninstall ever runs, since the chart ships its own
+> `kind: Namespace`.
+
+### KubeVirt custom resource
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kubevirt-cr
+  namespace: kube-system
+spec:
+  interval: 30m
+  targetNamespace: kubevirt
+  dependsOn:
+  - name: kubevirt-operator
+  chart:
+    spec:
+      chart: kubevirt-cr
+      version: "1.9.0"
+      sourceRef:
+        kind: HelmRepository
+        name: kubevirt
+        namespace: kube-system
+  install:
+    remediation:
+      remediateLastFailure: false
+  upgrade:
+    remediation:
+      remediateLastFailure: false
+  driftDetection:
+    mode: warn
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: KubeVirt
+          name: kubevirt
+        patch: |
+          - op: replace
+            path: /spec/configuration/developerConfiguration/featureGates
+            value:
+            - Sidecar
+            - DeclarativeHotplugVolumes
+```
+
+### CDI operator
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cdi-operator
+  namespace: kube-system
+spec:
+  interval: 30m
+  targetNamespace: cdi
+  chart:
+    spec:
+      chart: cdi-operator
+      version: "1.65.0"
+      sourceRef:
+        kind: HelmRepository
+        name: kubevirt
+        namespace: kube-system
+  install:
+    crds: Create
+    remediation:
+      remediateLastFailure: false
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      remediateLastFailure: false
+  driftDetection:
+    mode: enabled
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: Namespace
+          name: cdi
+        patch: |
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: cdi
+            annotations:
+              helm.sh/resource-policy: keep
+```
+
+### CDI custom resource
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cdi-cr
+  namespace: kube-system
+spec:
+  interval: 30m
+  targetNamespace: cdi
+  dependsOn:
+  - name: cdi-operator
+  chart:
+    spec:
+      chart: cdi-cr
+      version: "1.65.0"
+      sourceRef:
+        kind: HelmRepository
+        name: kubevirt
+        namespace: kube-system
+  install:
+    remediation:
+      remediateLastFailure: false
+  upgrade:
+    remediation:
+      remediateLastFailure: false
+  driftDetection:
+    mode: warn
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: CDI
+          name: cdi
+        patch: |
+          - op: replace
+            path: /spec/config/featureGates
+            value:
+            - HonorWaitForFirstConsumer
+            - WebhookPvcRendering
+```
+
+> On the operator CRs, `remediateLastFailure: false` stops helm-controller
+> uninstalling the release (and, via the charts' own `Namespace` resources, the
+> whole namespace) if the first install fails. `driftDetection: warn` (rather
+> than `enabled`) on the CR releases is because the operators default absent
+> spec fields on the CR they own, which `enabled` would read back as drift and
+> re-apply forever.

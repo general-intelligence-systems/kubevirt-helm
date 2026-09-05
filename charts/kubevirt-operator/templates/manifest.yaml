@@ -814,8 +814,12 @@ spec:
                         type: integer
                       disableTLS:
                         description: |-
-                          When set to true, DisableTLS will disable the additional layer of live migration encryption
-                          provided by KubeVirt. This is usually a bad idea. Defaults to false
+                          DisableTLS disables both TLS encryption and mutual TLS authentication
+                          on the migration proxy when set to true. This removes all cryptographic
+                          protection from the migration data stream.
+                          When disabled, implement network-level access controls to restrict
+                          migration traffic to trusted sources only.
+                          Defaults to false.
                         type: boolean
                       matchSELinuxLevelOnMigration:
                         description: |-
@@ -2314,9 +2318,10 @@ spec:
                             operator:
                               description: |-
                                 Operator represents a key's relationship to the value.
-                                Valid operators are Exists and Equal. Defaults to Equal.
+                                Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
                                 Exists is equivalent to wildcard for value, so that a pod can
                                 tolerate all taints of a particular category.
+                                Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
                               type: string
                             tolerationSeconds:
                               description: |-
@@ -3387,9 +3392,10 @@ spec:
                             operator:
                               description: |-
                                 Operator represents a key's relationship to the value.
-                                Valid operators are Exists and Equal. Defaults to Equal.
+                                Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
                                 Exists is equivalent to wildcard for value, so that a pod can
                                 tolerate all taints of a particular category.
+                                Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
                               type: string
                             tolerationSeconds:
                               description: |-
@@ -4314,8 +4320,12 @@ spec:
                         type: integer
                       disableTLS:
                         description: |-
-                          When set to true, DisableTLS will disable the additional layer of live migration encryption
-                          provided by KubeVirt. This is usually a bad idea. Defaults to false
+                          DisableTLS disables both TLS encryption and mutual TLS authentication
+                          on the migration proxy when set to true. This removes all cryptographic
+                          protection from the migration data stream.
+                          When disabled, implement network-level access controls to restrict
+                          migration traffic to trusted sources only.
+                          Defaults to false.
                         type: boolean
                       matchSELinuxLevelOnMigration:
                         description: |-
@@ -5814,9 +5824,10 @@ spec:
                             operator:
                               description: |-
                                 Operator represents a key's relationship to the value.
-                                Valid operators are Exists and Equal. Defaults to Equal.
+                                Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
                                 Exists is equivalent to wildcard for value, so that a pod can
                                 tolerate all taints of a particular category.
+                                Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
                               type: string
                             tolerationSeconds:
                               description: |-
@@ -6887,9 +6898,10 @@ spec:
                             operator:
                               description: |-
                                 Operator represents a key's relationship to the value.
-                                Valid operators are Exists and Equal. Defaults to Equal.
+                                Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
                                 Exists is equivalent to wildcard for value, so that a pod can
                                 tolerate all taints of a particular category.
+                                Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
                               type: string
                             tolerationSeconds:
                               description: |-
@@ -7944,12 +7956,6 @@ rules:
   - watch
   - get
 - apiGroups:
-  - k8s.cni.cncf.io
-  resources:
-  - network-attachment-definitions
-  verbs:
-  - get
-- apiGroups:
   - kubevirt.io
   resources:
   - virtualmachineinstances
@@ -8145,6 +8151,7 @@ rules:
   - virtualmachines/addvolume
   - virtualmachines/removevolume
   - virtualmachines/memorydump
+  - virtualmachines/removememorydump
   - virtualmachines/evacuate/cancel
   verbs:
   - update
@@ -8331,6 +8338,7 @@ rules:
   - virtualmachines/addvolume
   - virtualmachines/removevolume
   - virtualmachines/memorydump
+  - virtualmachines/removememorydump
   - virtualmachines/evacuate/cancel
   verbs:
   - update
@@ -8593,6 +8601,12 @@ rules:
   - watch
   - deletecollection
 - apiGroups:
+  - k8s.cni.cncf.io
+  resources:
+  - network-attachment-definitions
+  verbs:
+  - get
+- apiGroups:
   - authentication.k8s.io
   resources:
   - tokenreviews
@@ -8683,14 +8697,14 @@ spec:
         - virt-operator
         env:
         - name: VIRT_OPERATOR_IMAGE
-          value: quay.io/kubevirt/virt-operator:v1.9.0
+          value: quay.io/kubevirt/virt-operator:v1.10.0-alpha.0
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.9.0
-        image: quay.io/kubevirt/virt-operator:v1.9.0
+          value: v1.10.0-alpha.0
+        image: quay.io/kubevirt/virt-operator:v1.10.0-alpha.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:

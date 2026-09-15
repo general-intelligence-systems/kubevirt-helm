@@ -1,5 +1,7 @@
 # kubevirt-helm
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/general-intelligence-systems/kubevirt-helm)
+
 Helm charts for [KubeVirt](https://kubevirt.io) and [CDI](https://github.com/kubevirt/containerized-data-importer), automatically generated from upstream GitHub releases. All releases from v0.12.0 onwards are included for KubeVirt, and all CDI releases are included.
 
 ## Install

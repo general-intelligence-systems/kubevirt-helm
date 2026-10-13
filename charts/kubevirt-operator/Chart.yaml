@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kubevirt-operator
+description: KubeVirt kubevirt-operator manifests
+type: application
+version: 1.9.1
+appVersion: "1.9.1"

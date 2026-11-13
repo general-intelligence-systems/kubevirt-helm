@@ -1,3 +1,48 @@
+- tag: v1.10.0-rc.1
+  prerelease: true
+  draft: false
+  published_at: "2026-11-12T12:56:12Z"
+  assets:
+    - name: conformance.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/conformance.yaml
+    - name: demo-content.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/demo-content.yaml
+    - name: disks-images-provider.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/disks-images-provider.yaml
+    - name: dump
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/dump
+    - name: feature-gates.json
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/feature-gates.json
+    - name: kubevirt-cr.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/kubevirt-cr.yaml
+    - name: kubevirt-network-policies.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/kubevirt-network-policies.yaml
+    - name: kubevirt-operator.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/kubevirt-operator.yaml
+    - name: kubevirt-operatorsource.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/kubevirt-operatorsource.yaml
+    - name: kubevirtoperator.v1.10.0-rc.1.clusterserviceversion.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/kubevirtoperator.v1.10.0-rc.1.clusterserviceversion.yaml
+    - name: rbac-for-testing.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/rbac-for-testing.yaml
+    - name: tests.test
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/tests.test
+    - name: uploadproxy-nodeport.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/uploadproxy-nodeport.yaml
+    - name: v1.10.0-rc.1.tar.gz.asc
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/v1.10.0-rc.1.tar.gz.asc
+    - name: virtctl-v1.10.0-rc.1-darwin-amd64
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/virtctl-v1.10.0-rc.1-darwin-amd64
+    - name: virtctl-v1.10.0-rc.1-darwin-arm64
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/virtctl-v1.10.0-rc.1-darwin-arm64
+    - name: virtctl-v1.10.0-rc.1-linux-amd64
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/virtctl-v1.10.0-rc.1-linux-amd64
+    - name: virtctl-v1.10.0-rc.1-linux-arm64
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/virtctl-v1.10.0-rc.1-linux-arm64
+    - name: virtctl-v1.10.0-rc.1-linux-s390x
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/virtctl-v1.10.0-rc.1-linux-s390x
+    - name: virtctl-v1.10.0-rc.1-windows-amd64.exe
+      url: https://github.com/kubevirt/kubevirt/releases/download/v1.10.0-rc.1/virtctl-v1.10.0-rc.1-windows-amd64.exe
 - tag: v1.10.0-rc.0
   prerelease: true
   draft: false
@@ -6962,28 +7007,28 @@
   draft: false
   published_at: "2020-06-02T13:14:26Z"
   assets:
-    - name: demo-content.yaml
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/demo-content.yaml
-    - name: kubevirt-cr.yaml
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirt-cr.yaml
-    - name: kubevirt-cr.yaml.j2
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirt-cr.yaml.j2
-    - name: kubevirt-operator.yaml
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirt-operator.yaml
-    - name: kubevirt-operator.yaml.j2
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirt-operator.yaml.j2
-    - name: kubevirt-operatorsource.yaml
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirt-operatorsource.yaml
-    - name: kubevirtoperator.v0.30.0-rc.2.clusterserviceversion.yaml
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirtoperator.v0.30.0-rc.2.clusterserviceversion.yaml
+    - name: virtctl-v0.30.0-rc.2-windows-amd64.exe
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/virtctl-v0.30.0-rc.2-windows-amd64.exe
     - name: virtctl-v0.30.0-rc.2-darwin-amd64
       url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/virtctl-v0.30.0-rc.2-darwin-amd64
     - name: virtctl-v0.30.0-rc.2-linux-amd64
       url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/virtctl-v0.30.0-rc.2-linux-amd64
     - name: virtctl-v0.30.0-rc.2-linux-x86_64
       url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/virtctl-v0.30.0-rc.2-linux-x86_64
-    - name: virtctl-v0.30.0-rc.2-windows-amd64.exe
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/virtctl-v0.30.0-rc.2-windows-amd64.exe
+    - name: demo-content.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/demo-content.yaml
+    - name: kubevirt-operator.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirt-operator.yaml
+    - name: kubevirt-cr.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirt-cr.yaml
+    - name: kubevirt-operator.yaml.j2
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirt-operator.yaml.j2
+    - name: kubevirt-cr.yaml.j2
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirt-cr.yaml.j2
+    - name: kubevirt-operatorsource.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirt-operatorsource.yaml
+    - name: kubevirtoperator.v0.30.0-rc.2.clusterserviceversion.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.30.0-rc.2/kubevirtoperator.v0.30.0-rc.2.clusterserviceversion.yaml
 - tag: v0.30.0-rc.1
   prerelease: true
   draft: false
@@ -9452,16 +9497,16 @@
   draft: false
   published_at: "2018-05-05T17:25:45Z"
   assets:
+    - name: demo-content.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.5.0/demo-content.yaml
+    - name: kubevirt.yaml
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.5.0/kubevirt.yaml
+    - name: virtctl-v0.5.0-darwin-amd64
+      url: https://github.com/kubevirt/kubevirt/releases/download/v0.5.0/virtctl-v0.5.0-darwin-amd64
     - name: virtctl-v0.5.0-linux-amd64
       url: https://github.com/kubevirt/kubevirt/releases/download/v0.5.0/virtctl-v0.5.0-linux-amd64
     - name: virtctl-v0.5.0-windows-amd64.exe
       url: https://github.com/kubevirt/kubevirt/releases/download/v0.5.0/virtctl-v0.5.0-windows-amd64.exe
-    - name: virtctl-v0.5.0-darwin-amd64
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.5.0/virtctl-v0.5.0-darwin-amd64
-    - name: kubevirt.yaml
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.5.0/kubevirt.yaml
-    - name: demo-content.yaml
-      url: https://github.com/kubevirt/kubevirt/releases/download/v0.5.0/demo-content.yaml
 - tag: v0.5.0-alpha.1
   prerelease: true
   draft: false
